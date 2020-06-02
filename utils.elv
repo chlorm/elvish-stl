@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use str
 use github.com/chlorm/elvish-stl/os
 use github.com/chlorm/elvish-stl/path
 
@@ -22,7 +23,7 @@ use github.com/chlorm/elvish-stl/path
 fn get-preferred-cmd [env-var cmds]{
   local:cmd = ''
   try {
-    for local:i [ (splits ',' (get-env $env-var)) ] {
+    for local:i [ (str:split ',' (get-env $env-var)) ] {
       cmd = (search-external $i)
       if (!=s '' $cmd) {
         break

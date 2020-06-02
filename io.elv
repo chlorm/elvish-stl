@@ -13,10 +13,13 @@
 # limitations under the License.
 
 
+use str
+
+
 fn open [file]{
   put (slurp < $file)
 }
 
 fn cat [file]{
-  put (splits "\n" (open $file))
+  put (str:split "\n" (open $file))
 }

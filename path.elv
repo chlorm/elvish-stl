@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use str
 use github.com/chlorm/elvish-stl/list
 
 
@@ -32,7 +33,7 @@ fn basename [path]{
 }
 
 fn join [@objects]{
-  put (path-clean (joins $delimiter $objects))
+  put (path-clean (str:join $delimiter $objects))
 }
 
 fn dirname [path]{

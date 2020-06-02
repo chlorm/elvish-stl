@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use str
 use github.com/chlorm/elvish-stl/path
 
 
@@ -85,7 +86,7 @@ fn stat [path]{
   for local:i [ (keys $def) ] {
     tmp = [ $@tmp $def[$i] ]
   }
-  local:fmt = (joins "\n" $tmp)
+  local:fmt = (str:join "\n" $tmp)
 
   # The so called parsable(terse) output places the path (not parsable if path
   # contains a space) first and the final element (SELinux) is dynamic so
