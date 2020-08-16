@@ -29,6 +29,10 @@ fn copy [source target]{
   e:cp $source $target
 }
 
+fn gid {
+  e:id -g
+}
+
 fn link [source target]{
   e:ln $source $target
 }
@@ -137,6 +141,14 @@ fn touch [target]{
   e:touch $target
 }
 
+fn uid {
+  e:id -u
+}
+
 fn unlink [link]{
   e:unlink $link
+}
+
+fn user {
+  e:id -un
 }
