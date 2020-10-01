@@ -74,12 +74,10 @@ fn stat [path]{
   # FIXME: birth-time and selinux-context are not portable.
   local:def = [
     &permission-octal='%a'
-    &selinux-context='%C'
     &filetype='%F'
     &gid='%g'
     &size='%s'
     &uid='%u'
-    &birth-time='%w'
     &access-time='%x'
     &modification-time='%y'
     &status-change-time='%z'
