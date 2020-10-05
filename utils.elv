@@ -50,7 +50,7 @@ fn get-preferred-cmd [env-var cmds]{
 fn test-writeable [dir]{
     try {
         local:file = (path:join $dir 'test-write-file')
-        if (os:exist $file) {
+        if (os:exists $file) {
             os:remove $file
         }
         os:touch $file
