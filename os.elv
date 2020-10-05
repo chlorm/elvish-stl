@@ -70,18 +70,35 @@ fn removedirs [dir]{
     e:rm -fr $dir
 }
 
-fn stat [path]{
-    # FIXME: birth-time and selinux-context are not portable.
-    local:def = [
-        &permission-octal='%a'
-        &filetype='%F'
-        &gid='%g'
-        &size='%s'
-        &uid='%u'
-        &access-time='%x'
-        &modification-time='%y'
-        &status-change-time='%z'
-    ]
+fn stat [path &fs=$false]{
+    local:def = [ ]
+    if $fs {
+        def = [
+            &blocks='%b'
+            &inodes='%c'
+            &available-blocks='%a'
+            &free-blocks='%f'
+            &free-inodes='%d'
+            &id='%i'
+            &max-filename-length='%l'
+            &block-size='%s'
+            &fundamental-block-size='%S'
+            &type-hex='%t'
+            &type='%T'
+        ]
+    } else {
+        # FIXME: birth-time and selinux-context are not portable.
+        def = [
+            &permission-octal='%a'
+            &filetype='%F'
+            &gid='%g'
+            &size='%s'
+            &uid='%u'
+            &access-time='%x'
+            &modification-time='%y'
+            &status-change-time='%z'
+        ]
+    }
 
     # Build format string
     local:tmp = [ ]
@@ -90,10 +107,14 @@ fn stat [path]{
     }
     local:fmt = (str:join "\n" $tmp)
 
+    local:args = [ '-c' $fmt ]
+    if $fs {
+        args = [ $@args '-f' ]
+    }
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    local:s = [ (e:stat '-c' $fmt $path) ]
+    local:s = [ (e:stat $@args $path) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
@@ -107,6 +128,10 @@ fn stat [path]{
     }
 
     put $stat
+}
+
+fn statfs [path]{
+    stat &fs=$true $path
 }
 
 fn -is-type [type path]{
