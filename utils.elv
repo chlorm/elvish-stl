@@ -21,41 +21,41 @@ use github.com/chlorm/elvish-stl/path
 # env-var is a comma separated environment variable of preferred commands.
 # cmds is a list of fallback commands if none exist in env-var.
 fn get-preferred-cmd [env-var cmds]{
-  local:cmd = ''
-  try {
-    for local:i [ (str:split ',' (get-env $env-var)) ] {
-      cmd = (search-external $i)
-      if (!=s '' $cmd) {
-        break
-      }
+    local:cmd = ''
+    try {
+        for local:i [ (str:split ',' (get-env $env-var)) ] {
+            cmd = (search-external $i)
+            if (!=s '' $cmd) {
+                break
+            }
+        }
+    } except _ {
+        for local:p $cmds {
+            try {
+                cmd = (search-external $p)
+                break
+            } except _ {
+                continue
+            }
+        }
     }
-  } except _ {
-    for local:p $cmds {
-      try {
-        cmd = (search-external $p)
-        break
-      } except _ {
-        continue
-      }
+
+    if (==s $cmd '') {
+        fail 'No command found in '$cmds', install one or set '$env-var
     }
-  }
 
-  if (==s $cmd '') {
-    fail 'No command found in '$cmds', install one or set '$env-var
-  }
-
-  put $cmd
+    put $cmd
 }
 
 fn test-writeable [dir]{
-  try {
-    local:file = (path:join $dir 'test-write-file')
-    if (os:exist $file) {
-      os:remove $file
+    try {
+        local:file = (path:join $dir 'test-write-file')
+        if (os:exist $file) {
+            os:remove $file
+        }
+        os:touch $file
+        os:remove $file
+    } except _ {
+        fail $dir' is not writeable'
     }
-    os:touch $file
-    os:remove $file
-  } except _ {
-    fail $dir' is not writeable'
-  }
 }

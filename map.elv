@@ -14,11 +14,11 @@
 
 
 fn drop [map key]{
-  local:new-map = [&]
-  for local:i [ (keys $map) ] {
-    if (!=s $key $i) {
-      new-map[$i]=$map[$i]
+    local:new-map = [&]
+    for local:i [ (keys $map) ] {
+        if (!=s $key $i) {
+            new-map[$i]=$map[$i]
+        }
     }
-  }
-  put $new-map
+    put $new-map
 }

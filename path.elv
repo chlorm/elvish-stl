@@ -19,76 +19,76 @@ use github.com/chlorm/elvish-stl/list
 
 local:delimiter = '/'
 try {
-  local:test = [ (put $delimiter*) ]
+    local:test = [ (put $delimiter*) ]
 } except _ {
-  delimiter = '\'
+    delimiter = '\'
 }
 
 fn absolute [path]{
-  path-abs $path
+    path-abs $path
 }
 
 fn basename [path]{
-  path-base $path
+    path-base $path
 }
 
 fn join [@objects]{
-  put (path-clean (str:join $delimiter $objects))
+    put (path-clean (str:join $delimiter $objects))
 }
 
 fn dirname [path]{
-  path-dir $path
+    path-dir $path
 }
 
 fn scandir [dir]{
-  local:p = $pwd
-  try {
-    cd $dir
-  } except _ {
-    fail 'directory does not exist: '$dir
-  }
-  cd $p
+    local:p = $pwd
+    try {
+        cd $dir
+    } except _ {
+        fail 'directory does not exist: '$dir
+    }
+    cd $p
 
   # find returns an empty string for matches that have been filtered out.
-  fn -non-empty [@s]{
-    for local:i $s {
-      if (!=s '' $i) {
-        put $i
-      }
+    fn -non-empty [@s]{
+        for local:i $s {
+            if (!=s '' $i) {
+                put $i
+            }
+        }
     }
-  }
 
-  files = [ (-non-empty (e:find $dir -maxdepth 1 -not -type d -printf '%P\n')) ]
-  dirs = [ (-non-empty (e:find $dir -maxdepth 1 -type d -printf '%P\n')) ]
+    files = [ (-non-empty (e:find $dir -maxdepth 1 -not -type d -printf '%P\n')) ]
+    dirs = [ (-non-empty (e:find $dir -maxdepth 1 -type d -printf '%P\n')) ]
 
-  put [
-    &root=$dir
-    &dirs=$dirs
-    &files=$files
-  ]
+    put [
+        &root=$dir
+        &dirs=$dirs
+        &files=$files
+    ]
 }
 
 # NOTE: this is not performant
 fn walk [dir]{
-  local:dir-search = [ $dir ]
-  while (> (count $dir-search) 0) {
-    for local:s $dir-search {
-      # Update index
-      dir-search = (list:drop $dir-search $s)
+    local:dir-search = [ $dir ]
+    while (> (count $dir-search) 0) {
+        for local:s $dir-search {
+            # Update index
+            dir-search = (list:drop $dir-search $s)
 
-      local:o = (scandir $s)
-      local:root = (path-clean $o[root])
+            local:o = (scandir $s)
+            local:root = (path-clean $o[root])
 
-      put [
-        &root=$root
-        &dirs=$o[dirs]
-        &files=$o[files]
-      ]
+            put [
+                &root=$root
+                &dirs=$o[dirs]
+                &files=$o[files]
+            ]
 
-      # Append new directories to index
-      for local:f $o[dirs] {
-        dir-search = [ $@dir-search (join $root $f) ]
-      }
+            # Append new directories to index
+            for local:f $o[dirs] {
+                dir-search = [ $@dir-search (join $root $f) ]
+            }
+        }
     }
-  }
 }

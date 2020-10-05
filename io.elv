@@ -17,9 +17,9 @@ use str
 
 
 fn open [file]{
-  put (slurp < $file)
+    put (slurp < $file)
 }
 
 fn cat [file]{
-  put (str:split "\n" (open $file))
+    put (str:split "\n" (open $file))
 }

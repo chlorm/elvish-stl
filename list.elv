@@ -14,19 +14,19 @@
 
 
 fn drop [list elem]{
-  local:new-list = [ ]
-  for local:i $list {
-    if (!=s $elem $i) {
-      new-list = [ $@new-list $i ]
+    local:new-list = [ ]
+    for local:i $list {
+        if (!=s $elem $i) {
+            new-list = [ $@new-list $i ]
+        }
     }
-  }
-  put $new-list
+    put $new-list
 }
 
 fn reverse [list]{
-  local:new-list = [ ]
-  for local:i $list {
-    new-list = [ $i $@new-list ]
-  }
-  put $new-list
+    local:new-list = [ ]
+    for local:i $list {
+        new-list = [ $i $@new-list ]
+    }
+    put $new-list
 }

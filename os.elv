@@ -18,107 +18,107 @@ use github.com/chlorm/elvish-stl/path
 
 
 fn chmod [perm target]{
-  e:chmod $perm $target
+    e:chmod $perm $target
 }
 
 fn chown [user-group target]{
-  e:chown $user-group $target
+    e:chown $user-group $target
 }
 
 fn copy [source target]{
-  e:cp $source $target
+    e:cp $source $target
 }
 
 fn gid {
-  e:id -g
+    e:id -g
 }
 
 fn link [source target]{
-  e:ln $source $target
+    e:ln $source $target
 }
 
 fn makedir [dir &mode='0777']{
-  e:mkdir -m (to-string $mode) $dir
+    e:mkdir -m (to-string $mode) $dir
 }
 
 fn makedirs [dir &mode='0777']{
-  e:mkdir -m (to-string $mode) -p $dir
+    e:mkdir -m (to-string $mode) -p $dir
 }
 
 fn move [source target]{
-  e:mv $source $target
+    e:mv $source $target
 }
 
 # Returns dos or unix
 fn ostype {
-  if (==s '\' $path:delimiter) {
-    put 'dos'
-  } else {
-    put 'unix'
-  }
+    if (==s '\' $path:delimiter) {
+        put 'dos'
+    } else {
+        put 'unix'
+    }
 }
 
 fn readlink [path]{
-  e:readlink -m $path
+    e:readlink -m $path
 }
 
 fn remove [file]{
-  e:rm -f $file
+    e:rm -f $file
 }
 
 fn removedirs [dir]{
-  e:rm -fr $dir
+    e:rm -fr $dir
 }
 
 fn stat [path]{
-  # FIXME: birth-time and selinux-context are not portable.
-  local:def = [
-    &permission-octal='%a'
-    &filetype='%F'
-    &gid='%g'
-    &size='%s'
-    &uid='%u'
-    &access-time='%x'
-    &modification-time='%y'
-    &status-change-time='%z'
-  ]
+    # FIXME: birth-time and selinux-context are not portable.
+    local:def = [
+        &permission-octal='%a'
+        &filetype='%F'
+        &gid='%g'
+        &size='%s'
+        &uid='%u'
+        &access-time='%x'
+        &modification-time='%y'
+        &status-change-time='%z'
+    ]
 
-  # Build format string
-  local:tmp = [ ]
-  for local:i [ (keys $def) ] {
-    tmp = [ $@tmp $def[$i] ]
-  }
-  local:fmt = (str:join "\n" $tmp)
+    # Build format string
+    local:tmp = [ ]
+    for local:i [ (keys $def) ] {
+        tmp = [ $@tmp $def[$i] ]
+    }
+    local:fmt = (str:join "\n" $tmp)
 
-  # The so called parsable(terse) output places the path (not parsable if path
-  # contains a space) first and the final element (SELinux) is dynamic so
-  # manually specify the format string to actually get parsable output.
-  local:s = [ (e:stat '-c' $fmt $path) ]
+    # The so called parsable(terse) output places the path (not parsable if path
+    # contains a space) first and the final element (SELinux) is dynamic so
+    # manually specify the format string to actually get parsable output.
+    local:s = [ (e:stat '-c' $fmt $path) ]
 
-  if (not (eq (count $tmp) (count $s))) {
-    fail 'list length mismatch'
-  }
+    if (not (eq (count $tmp) (count $s))) {
+        fail 'list length mismatch'
+    }
 
-  local:stat = [&]
-  local:iter = 0
-  for local:i [ (keys $def) ] {
-    stat[$i]=$s[$iter]
-    iter = (+ $iter 1)
-  }
+    local:stat = [&]
+    local:iter = 0
+    for local:i [ (keys $def) ] {
+        stat[$i]=$s[$iter]
+        iter = (+ $iter 1)
+    }
 
-  put $stat
+    put $stat
 }
 
 fn -is-type [type path]{
-  local:i = $true
-  try {
-    if (!=s $type (stat $path 2>&-)[filetype]) {
-      fail
+    local:i = $true
+    try {
+        if (!=s $type (stat $path 2>&-)[filetype]) {
+            fail
+        }
+    } except _ {
+        i = $false
     }
-  } except _ {
-    i = $false
-  }
-  put $i
+    put $i
 }
 
 fn is-blkdev [path]{ -is-type 'block device' $path }
@@ -129,24 +129,26 @@ fn is-pipe [path]{ -is-type 'FIFO/pipe' $path }
 fn is-socket [path]{ -is-type 'socket' $path }
 fn is-symlink [path]{ -is-type 'symbolic link' $path }
 fn is-unknown [path]{ -is-type 'unknown?' $path }
-fn exists [path]{ if ?(stat $path >/dev/null 2>&-) { put $true } else { put $false } }
+fn exists [path]{
+    if ?(stat $path >/dev/null 2>&-) { put $true } else { put $false }
+}
 
 fn symlink [source target]{
-  e:ln -s $source $target
+    e:ln -s $source $target
 }
 
 fn touch [target]{
-  e:touch $target
+    e:touch $target
 }
 
 fn uid {
-  e:id -u
+    e:id -u
 }
 
 fn unlink [link]{
-  e:unlink $link
+    e:unlink $link
 }
 
 fn user {
-  e:id -un
+    e:id -un
 }
