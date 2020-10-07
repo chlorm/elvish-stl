@@ -31,6 +31,14 @@ fn basename [path]{
     path-base $path
 }
 
+fn home {
+    if $platform:is-windows {
+        put (str:join '' [ (get-env HOMEDRIVE; get-env HOMEPATH) ])
+    } else {
+        get-env HOME
+    }
+}
+
 fn join [@objects]{
     put (path-clean (str:join $delimiter $objects))
 }
