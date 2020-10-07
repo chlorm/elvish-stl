@@ -37,12 +37,12 @@ fn link [source target]{
     e:ln $source $target
 }
 
-fn makedir [dir &mode='0777']{
-    e:mkdir -m (to-string $mode) $dir
+fn makedir [dir]{
+    e:mkdir $dir
 }
 
-fn makedirs [dir &mode='0777']{
-    e:mkdir -m (to-string $mode) -p $dir
+fn makedirs [dir]{
+    e:mkdir -p $dir
 }
 
 fn move [source target]{
