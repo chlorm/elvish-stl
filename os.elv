@@ -13,9 +13,15 @@
 # limitations under the License.
 
 
+use platform
 use str
 use github.com/chlorm/elvish-stl/path
 
+
+null = '/dev/null'
+if $platform:is-windows {
+    null = 'NUL'
+}
 
 fn chmod [perm target]{
     e:chmod $perm $target
@@ -155,7 +161,7 @@ fn is-socket [path]{ -is-type 'socket' $path }
 fn is-symlink [path]{ -is-type 'symbolic link' $path }
 fn is-unknown [path]{ -is-type 'unknown?' $path }
 fn exists [path]{
-    if ?(stat $path >/dev/null 2>&-) { put $true } else { put $false }
+    if ?(stat $path >$null 2>&-) { put $true } else { put $false }
 }
 
 fn symlink [source target]{
