@@ -111,7 +111,7 @@ fn stat [path &fs=$false]{
     for local:i [ (keys $def) ] {
         tmp = [ $@tmp $def[$i] ]
     }
-    local:fmt = (str:join "\n" $tmp)
+    local:fmt = (str:join "," $tmp)
 
     local:args = [ '-c' $fmt ]
     if $fs {
@@ -120,7 +120,7 @@ fn stat [path &fs=$false]{
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    local:s = [ (e:stat $@args $path) ]
+    local:s = [ (str:split ',' (e:stat $@args $path)) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
