@@ -13,14 +13,13 @@
 # limitations under the License.
 
 
+use platform
 use str
 use github.com/chlorm/elvish-stl/list
 
 
 local:delimiter = '/'
-try {
-    local:test = [ (put $delimiter*) ]
-} except _ {
+if $platform:is-windows {
     delimiter = '\'
 }
 
