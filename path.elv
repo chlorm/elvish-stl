@@ -18,9 +18,9 @@ use str
 use github.com/chlorm/elvish-stl/list
 
 
-local:delimiter = '/'
+DELIMITER = '/'
 if $platform:is-windows {
-    delimiter = '\'
+    DELIMITER = '\'
 }
 
 fn absolute [path]{
@@ -40,7 +40,7 @@ fn home {
 }
 
 fn join [@objects]{
-    put (path-clean (str:join $delimiter $objects))
+    put (path-clean (str:join $DELIMITER $objects))
 }
 
 fn dirname [path]{
@@ -48,7 +48,7 @@ fn dirname [path]{
 }
 
 fn scandir [dir]{
-    local:p = $pwd
+    p = $pwd
     try {
         cd $dir
     } except _ {
@@ -56,9 +56,9 @@ fn scandir [dir]{
     }
     cd $p
 
-  # find returns an empty string for matches that have been filtered out.
+    # find returns an empty string for matches that have been filtered out.
     fn -non-empty [@s]{
-        for local:i $s {
+        for i $s {
             if (!=s '' $i) {
                 put $i
             }
@@ -77,14 +77,14 @@ fn scandir [dir]{
 
 # NOTE: this is not performant
 fn walk [dir]{
-    local:dir-search = [ $dir ]
-    while (> (count $dir-search) 0) {
-        for local:s $dir-search {
+    dirSearch = [ $dir ]
+    while (> (count $dirSearch) 0) {
+        for s $dirSearch {
             # Update index
-            dir-search = (list:drop $dir-search $s)
+            dirSearch = (list:drop $dirSearch $s)
 
-            local:o = (scandir $s)
-            local:root = (path-clean $o[root])
+            o = (scandir $s)
+            root = (path-clean $o[root])
 
             put [
                 &root=$root
@@ -93,8 +93,8 @@ fn walk [dir]{
             ]
 
             # Append new directories to index
-            for local:f $o[dirs] {
-                dir-search = [ $@dir-search (join $root $f) ]
+            for f $o[dirs] {
+                dirSearch = [ $@dirSearch (join $root $f) ]
             }
         }
     }

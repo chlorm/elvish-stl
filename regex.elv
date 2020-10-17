@@ -23,7 +23,7 @@ fn obj [obj]{
 
 # Returns a string instead of an object like re:find
 fn find [regex string]{
-    for local:i [ (re:find $regex $string) ] {
+    for i [ (re:find $regex $string) ] {
         put (obj $i)
     }
 }

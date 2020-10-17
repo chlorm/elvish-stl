@@ -18,9 +18,9 @@ use str
 use github.com/chlorm/elvish-stl/path
 
 
-null = '/dev/null'
+NULL = '/dev/null'
 if $platform:is-windows {
-    null = 'NUL'
+    NULL = 'NUL'
 }
 
 fn chmod [perm target]{
@@ -57,7 +57,7 @@ fn move [source target]{
 
 # Returns dos or unix
 fn ostype {
-    if (==s '\' $path:delimiter) {
+    if (==s $path:DELIMITER '\') {
         put 'dos'
     } else {
         put 'unix'
@@ -77,7 +77,7 @@ fn removedirs [dir]{
 }
 
 fn stat [path &fs=$false]{
-    local:def = [ ]
+    def = [&]
     if $fs {
         def = [
             &blocks='%b'
@@ -107,29 +107,29 @@ fn stat [path &fs=$false]{
     }
 
     # Build format string
-    local:tmp = [ ]
-    for local:i [ (keys $def) ] {
+    tmp = [ ]
+    for i [ (keys $def) ] {
         tmp = [ $@tmp $def[$i] ]
     }
-    local:fmt = (str:join "," $tmp)
+    fmt = (str:join "," $tmp)
 
-    local:args = [ '-c' $fmt ]
+    cmdArgs = [ '-c' $fmt ]
     if $fs {
-        args = [ $@args '-f' ]
+        cmdArgs = [ $@cmdArgs '-f' ]
     }
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    local:s = [ (str:split ',' (e:stat $@args $path)) ]
+    s = [ (str:split ',' (e:stat $@cmdArgs $path)) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
     }
 
-    local:stat = [&]
-    local:iter = 0
-    for local:i [ (keys $def) ] {
-        stat[$i]=$s[$iter]
+    stat = [&]
+    iter = 0
+    for i [ (keys $def) ] {
+        stat[$i] = $s[$iter]
         iter = (+ $iter 1)
     }
 
@@ -141,7 +141,7 @@ fn statfs [path]{
 }
 
 fn -is-type [type path]{
-    local:i = $true
+    i = $true
     try {
         if (!=s $type (stat $path 2>&-)[filetype]) {
             fail
@@ -161,7 +161,7 @@ fn is-socket [path]{ -is-type 'socket' $path }
 fn is-symlink [path]{ -is-type 'symbolic link' $path }
 fn is-unknown [path]{ -is-type 'unknown?' $path }
 fn exists [path]{
-    if ?(stat $path >$null 2>&-) { put $true } else { put $false }
+    if ?(stat $path >$NULL 2>&-) { put $true } else { put $false }
 }
 
 fn symlink [source target]{
