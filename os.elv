@@ -23,6 +23,41 @@ if $platform:is-windows {
     NULL = 'NUL'
 }
 
+# https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
+WINDOWS-RESERVED-NAMES = [
+    AUX
+    COM1
+    COM2
+    COM3
+    COM4
+    COM5
+    COM6
+    COM7
+    COM8
+    COM9
+    CON
+    LPT1
+    LPT2
+    LPT3
+    LPT4
+    LPT5
+    LPT6
+    LPT7
+    LPT8
+    LPT9
+    NUL
+    PRN
+]
+
+fn -check-windows-reserved [path]{
+    b = (path:basename $path)
+    for i $WINDOWS-RESERVED-NAMES {
+        if (==s $i (str:to-upper $b)) {
+            fail 'Windows reserved name: '$i
+        }
+    }
+}
+
 fn chmod [perm target]{
     e:chmod $perm $target
 }
@@ -32,6 +67,9 @@ fn chown [user-group target]{
 }
 
 fn copy [source target]{
+    if $platform:is-windows {
+        -check-windows-reserved $target
+    }
     e:cp $source $target
 }
 
@@ -40,18 +78,30 @@ fn gid {
 }
 
 fn link [source target]{
+    if $platform:is-windows {
+        -check-windows-reserved $target
+    }
     e:ln $source $target
 }
 
 fn makedir [dir]{
+    if $platform:is-windows {
+        -check-windows-reserved $dir
+    }
     e:mkdir $dir
 }
 
 fn makedirs [dir]{
+    if $platform:is-windows {
+        -check-windows-reserved $dir
+    }
     e:mkdir -p $dir
 }
 
 fn move [source target]{
+    if $platform:is-windows {
+        -check-windows-reserved $target
+    }
     e:mv $source $target
 }
 
@@ -165,10 +215,16 @@ fn exists [path]{
 }
 
 fn symlink [source target]{
+    if $platform:is-windows {
+        -check-windows-reserved $target
+    }
     e:ln -s $source $target
 }
 
 fn touch [target]{
+    if $platform:is-windows {
+        -check-windows-reserved $target
+    }
     e:touch $target
 }
 
