@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use path
 use platform
 use str
 use github.com/chlorm/elvish-stl/list
@@ -23,12 +24,12 @@ if $platform:is-windows {
     DELIMITER = '\'
 }
 
-fn absolute [path]{
-    path-abs $path
+fn absolute [path_]{
+    path:abs $path_
 }
 
-fn basename [path]{
-    path-base $path
+fn basename [path_]{
+    path:base $path_
 }
 
 fn home {
@@ -40,11 +41,11 @@ fn home {
 }
 
 fn join [@objects]{
-    put (path-clean (str:join $DELIMITER $objects))
+    put (path:clean (str:join $DELIMITER $objects))
 }
 
-fn dirname [path]{
-    path-dir $path
+fn dirname [path_]{
+    path:dir $path_
 }
 
 fn scandir [dir]{
@@ -84,7 +85,7 @@ fn walk [dir]{
             dirSearch = (list:drop $dirSearch $s)
 
             o = (scandir $s)
-            root = (path-clean $o[root])
+            root = (path:clean $o[root])
 
             put [
                 &root=$root
