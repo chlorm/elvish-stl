@@ -19,9 +19,9 @@ use str
 use github.com/chlorm/elvish-stl/list
 
 
-DELIMITER = '/'
+var DELIMITER = '/'
 if $platform:is-windows {
-    DELIMITER = '\'
+    set DELIMITER = '\'
 }
 
 fn absolute [path_]{
@@ -49,7 +49,7 @@ fn dirname [path_]{
 }
 
 fn scandir [dir]{
-    p = $pwd
+    var p = $pwd
     try {
         cd $dir
     } except _ {
@@ -66,8 +66,8 @@ fn scandir [dir]{
         }
     }
 
-    files = [ (-non-empty (e:find $dir -maxdepth 1 -not -type d -printf '%P\n')) ]
-    dirs = [ (-non-empty (e:find $dir -maxdepth 1 -type d -printf '%P\n')) ]
+    var files = [ (-non-empty (e:find $dir -maxdepth 1 -not -type d -printf '%P\n')) ]
+    var dirs = [ (-non-empty (e:find $dir -maxdepth 1 -type d -printf '%P\n')) ]
 
     put [
         &root=$dir
@@ -78,14 +78,14 @@ fn scandir [dir]{
 
 # NOTE: this is not performant
 fn walk [dir]{
-    dirSearch = [ $dir ]
+    var dirSearch = [ $dir ]
     while (> (count $dirSearch) 0) {
         for s $dirSearch {
             # Update index
-            dirSearch = (list:drop $dirSearch $s)
+            set dirSearch = (list:drop $dirSearch $s)
 
-            o = (scandir $s)
-            root = (path:clean $o[root])
+            var o = (scandir $s)
+            var root = (path:clean $o[root])
 
             put [
                 &root=$root
@@ -95,7 +95,7 @@ fn walk [dir]{
 
             # Append new directories to index
             for f $o[dirs] {
-                dirSearch = [ $@dirSearch (join $root $f) ]
+                set dirSearch = [ $@dirSearch (join $root $f) ]
             }
         }
     }

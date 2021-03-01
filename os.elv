@@ -18,13 +18,13 @@ use str
 use github.com/chlorm/elvish-stl/path
 
 
-NULL = '/dev/null'
+var NULL = '/dev/null'
 if $platform:is-windows {
-    NULL = 'NUL'
+    set NULL = 'NUL'
 }
 
 # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
-WINDOWS-RESERVED-NAMES = [
+var WINDOWS-RESERVED-NAMES = [
     AUX
     COM1
     COM2
@@ -50,7 +50,7 @@ WINDOWS-RESERVED-NAMES = [
 ]
 
 fn -check-windows-reserved [path]{
-    b = (path:basename $path)
+    var b = (path:basename $path)
     for i $WINDOWS-RESERVED-NAMES {
         if (==s $i (str:to-upper $b)) {
             fail 'Windows reserved name: '$i
@@ -127,9 +127,9 @@ fn removedirs [dir]{
 }
 
 fn stat [path &fs=$false]{
-    def = [&]
+    var def = [&]
     if $fs {
-        def = [
+        set def = [
             &blocks='%b'
             &inodes='%c'
             &available-blocks='%a'
@@ -144,7 +144,7 @@ fn stat [path &fs=$false]{
         ]
     } else {
         # FIXME: birth-time and selinux-context are not portable.
-        def = [
+        set def = [
             &permission-octal='%a'
             &filetype='%F'
             &gid='%g'
@@ -157,30 +157,30 @@ fn stat [path &fs=$false]{
     }
 
     # Build format string
-    tmp = [ ]
+    var tmp = [ ]
     for i [ (keys $def) ] {
-        tmp = [ $@tmp $def[$i] ]
+        set tmp = [ $@tmp $def[$i] ]
     }
-    fmt = (str:join "," $tmp)
+    var fmt = (str:join "," $tmp)
 
-    cmdArgs = [ '-c' $fmt ]
+    var cmdArgs = [ '-c' $fmt ]
     if $fs {
-        cmdArgs = [ $@cmdArgs '-f' ]
+        set cmdArgs = [ $@cmdArgs '-f' ]
     }
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    s = [ (str:split ',' (e:stat $@cmdArgs $path)) ]
+    var s = [ (str:split ',' (e:stat $@cmdArgs $path)) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
     }
 
-    stat = [&]
-    iter = 0
+    var stat = [&]
+    var iter = 0
     for i [ (keys $def) ] {
-        stat[$i] = $s[$iter]
-        iter = (+ $iter 1)
+        set stat[$i] = $s[$iter]
+        set iter = (+ $iter 1)
     }
 
     put $stat
@@ -191,13 +191,13 @@ fn statfs [path]{
 }
 
 fn -is-type [type path]{
-    i = $true
+    var i = $true
     try {
         if (!=s $type (stat $path 2>&-)[filetype]) {
             fail
         }
     } except _ {
-        i = $false
+        set i = $false
     }
     put $i
 }

@@ -14,10 +14,10 @@
 
 
 fn drop [map key]{
-    newMap = [&]
+    var newMap = [&]
     for i [ (keys $map) ] {
         if (!=s $key $i) {
-            newMap[$i] = $map[$i]
+            set newMap[$i] = $map[$i]
         }
     }
     put $newMap
