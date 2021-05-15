@@ -34,9 +34,9 @@ fn basename [path_]{
 
 fn home {
     if $platform:is-windows {
-        put (str:join '' [ (get-env HOMEDRIVE; get-env HOMEPATH) ])
+        put (str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ])
     } else {
-        get-env HOME
+        get-env 'HOME'
     }
 }
 
@@ -66,8 +66,12 @@ fn scandir [dir]{
         }
     }
 
-    var files = [ (-non-empty (e:find $dir -maxdepth 1 -not -type d -printf '%P\n')) ]
-    var dirs = [ (-non-empty (e:find $dir -maxdepth 1 -type d -printf '%P\n')) ]
+    var findFiles = [(
+        e:find $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
+    )]
+    var files = [ (-non-empty $@findFiles) ]
+    var findDirs = [ (e:find $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n') ]
+    var dirs = [ (-non-empty $@findDirs) ]
 
     put [
         &root=$dir
@@ -85,12 +89,12 @@ fn walk [dir]{
             set dirSearch = (list:drop $dirSearch $s)
 
             var o = (scandir $s)
-            var root = (path:clean $o[root])
+            var root = (path:clean $o['root'])
 
             put [
                 &root=$root
-                &dirs=$o[dirs]
-                &files=$o[files]
+                &dirs=$o['dirs']
+                &files=$o['files']
             ]
 
             # Append new directories to index
