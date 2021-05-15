@@ -25,28 +25,28 @@ if $platform:is-windows {
 
 # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
 var WINDOWS-RESERVED-NAMES = [
-    AUX
-    COM1
-    COM2
-    COM3
-    COM4
-    COM5
-    COM6
-    COM7
-    COM8
-    COM9
-    CON
-    LPT1
-    LPT2
-    LPT3
-    LPT4
-    LPT5
-    LPT6
-    LPT7
-    LPT8
-    LPT9
-    NUL
-    PRN
+    'AUX'
+    'COM1'
+    'COM2'
+    'COM3'
+    'COM4'
+    'COM5'
+    'COM6'
+    'COM7'
+    'COM8'
+    'COM9'
+    'CON'
+    'LPT1'
+    'LPT2'
+    'LPT3'
+    'LPT4'
+    'LPT5'
+    'LPT6'
+    'LPT7'
+    'LPT8'
+    'LPT9'
+    'NUL'
+    'PRN'
 ]
 
 fn -check-windows-reserved [path]{
@@ -74,7 +74,7 @@ fn copy [source target]{
 }
 
 fn gid {
-    e:id -g
+    e:id '-g'
 }
 
 fn link [source target]{
@@ -95,7 +95,7 @@ fn makedirs [dir]{
     if $platform:is-windows {
         -check-windows-reserved $dir
     }
-    e:mkdir -p $dir
+    e:mkdir '-p' $dir
 }
 
 fn move [source target]{
@@ -115,15 +115,15 @@ fn ostype {
 }
 
 fn readlink [path]{
-    e:readlink -m $path
+    e:readlink '-m' $path
 }
 
 fn remove [file]{
-    e:rm -f $file
+    e:rm '-f' $file
 }
 
 fn removedirs [dir]{
-    e:rm -fr $dir
+    e:rm '-fr' $dir
 }
 
 fn stat [path &fs=$false]{
@@ -218,7 +218,7 @@ fn symlink [source target]{
     if $platform:is-windows {
         -check-windows-reserved $target
     }
-    e:ln -s $source $target
+    e:ln '-s' $source $target
 }
 
 fn touch [target]{
@@ -229,7 +229,7 @@ fn touch [target]{
 }
 
 fn uid {
-    e:id -u
+    e:id '-u'
 }
 
 fn unlink [link]{
@@ -237,5 +237,5 @@ fn unlink [link]{
 }
 
 fn user {
-    e:id -un
+    e:id '-un'
 }
