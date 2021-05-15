@@ -28,7 +28,7 @@ fn drop [list elem]{
     var newList = [ ]
     for i $list {
         if (!=s $elem $i) {
-            newList = [ $@newList $i ]
+            set newList = [ $@newList $i ]
         }
     }
     put $newList
@@ -37,7 +37,7 @@ fn drop [list elem]{
 fn reverse [list]{
     var newList = [ ]
     for local:i $list {
-        newList = [ $i $@newList ]
+        set newList = [ $i $@newList ]
     }
     put $newList
 }
