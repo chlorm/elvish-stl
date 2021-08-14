@@ -14,6 +14,7 @@
 
 
 use str
+use github.com/chlorm/elvish-stl/env
 use github.com/chlorm/elvish-stl/os
 use github.com/chlorm/elvish-stl/path
 
@@ -31,7 +32,7 @@ fn get-preferred-cmd [envVar cmds]{
     for i $cmds {
         var path = $nil
         try {
-            set path = (search-external $i)
+            set path = (env:bin-path $i)
         } except _ {
             continue
         }
