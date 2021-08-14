@@ -13,6 +13,8 @@
 # limitations under the License.
 
 
+use platform
+use re
 use str
 use github.com/chlorm/elvish-stl/list
 
@@ -76,4 +78,24 @@ fn append [envVar path &delimiter=':']{
 
 fn prepend [envVar path &delimiter=':']{
     -pend-generic $envVar $path &delimiter=$delimiter &pre=$true
+}
+
+fn bin-path [bin]{
+    var path = $nil
+    try {
+        var path = (search-external $bin)
+    } except _ {
+        fail
+    }
+
+    if (or (eq $path $nil) (==s $path '')) {
+        fail
+    }
+
+    # search-external does not escape paths
+    if $platform:is-windows {
+        set path = (re:replace '\\' '\\' $path)
+    }
+
+    put $path
 }
