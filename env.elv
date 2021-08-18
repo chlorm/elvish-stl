@@ -57,15 +57,10 @@ fn -pend-generic [envVar path &delimiter=$nil &pre=$false]{
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         set-env $envVar $path
+    } elif (has-path $envVar $path &delimiter=$delimiter) {
+        # Don't pollute paths with duplicates.
         return
-    }
-
-    # Don't pollute paths with duplicates.
-    if (has-path $envVar $path &delimiter=$delimiter) {
-        return
-    }
-
-    if $pre {
+    } elif $pre {
         set-env $envVar $path$delimiter$envVarVal
     } else {
         set-env $envVar $envVarVal$delimiter$path
