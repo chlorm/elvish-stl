@@ -211,7 +211,12 @@ fn is-socket [path]{ -is-type 'socket' $path }
 fn is-symlink [path]{ -is-type 'symbolic link' $path }
 fn is-unknown [path]{ -is-type 'unknown?' $path }
 fn exists [path]{
-    if ?(stat $path >$NULL 2>&-) { put $true } else { put $false }
+    try {
+        var _ = (> (count (stat $path 2>&-)) 0)
+        put $true
+    } except _ {
+        put $false
+    }
 }
 
 fn symlink [source target]{
