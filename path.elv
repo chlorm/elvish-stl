@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Cody Opel <cwopel@chlorm.net>
+# Copyright (c) 2020-2021, Cody Opel <cwopel@chlorm.net>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,33 +13,16 @@
 # limitations under the License.
 
 
-use file
 use path
 use platform
 use str
 use github.com/chlorm/elvish-stl/list
+use github.com/chlorm/elvish-stl/windows
 
 
 var DELIMITER = '/'
 if $platform:is-windows {
     set DELIMITER = '\'
-}
-
-# This wrapper captures and returns powershell errors while suppressing output
-# on success.
-fn -wrap-powershell [@command]{
-    var p = (file:pipe)
-    try {
-        e:powershell.exe '-NonInteractive' '-Command' $@command >$p
-        file:close $p[w]
-        put (str:split "\r\n" (slurp < $p))
-        file:close $p[r]
-    } except _ {
-        file:close $p[w]
-        var e = (slurp < $p)
-        file:close $p[r]
-        fail $e
-    }
 }
 
 fn absolute [path_]{
@@ -99,7 +82,8 @@ fn scandir [dir]{
     var findFiles = [ ]
     if $platform:is-windows {
         set findFiles = [(
-            -wrap-powershell 'Get-ChildItem' '-Path' $dir '-File' '-Name'
+            windows:wrap-powershell &output=$true ^
+                'Get-ChildItem' '-Path' $dir '-File' '-Name'
         )]
     } else {
         set findFiles = [(
@@ -110,7 +94,8 @@ fn scandir [dir]{
     var findDirs = [ ]
     if $platform:is-windows {
         set findDirs = [(
-            -wrap-powershell 'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
+            windows:wrap-powershell &output=$true ^
+                'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
         )]
     } else {
         set findDirs = [(
