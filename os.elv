@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use file
 use platform
 use str
 use github.com/chlorm/elvish-stl/path
@@ -58,10 +59,28 @@ fn -check-windows-reserved [path]{
     }
 }
 
+# This wrapper captures and returns powershell errors while suppressing output
+# on success.
+fn -wrap-powershell [@command]{
+    var p = (file:pipe)
+    try {
+        e:powershell.exe '-NonInteractive' '-Command' $@command >$p
+        file:close $p[w]
+        file:close $p[r]
+    } except _ {
+        file:close $p[w]
+        var e = (slurp < $p)
+        file:close $p[r]
+        fail $e
+    }
+}
+
+# FIXME: windows port
 fn chmod [perm target]{
     e:chmod $perm $target
 }
 
+# FIXME: windows port
 fn chown [user-group target]{
     e:chown $user-group $target
 }
@@ -69,10 +88,13 @@ fn chown [user-group target]{
 fn copy [source target]{
     if $platform:is-windows {
         -check-windows-reserved $target
+        -wrap-powershell 'Copy-Item' '-Path' $source '-Destination' $target
+    } else {
+        e:cp $source $target
     }
-    e:cp $source $target
 }
 
+# FIXME: windows port
 fn gid {
     e:id '-g'
 }
@@ -80,29 +102,41 @@ fn gid {
 fn link [source target]{
     if $platform:is-windows {
         -check-windows-reserved $target
+        -wrap-powershell 'New-Item' ^
+                '-ItemType' 'HardLink' ^
+                '-Value' $source ^
+                '-Path' $target
+    } else {
+        e:ln $source $target
     }
-    e:ln $source $target
 }
 
 fn makedir [dir]{
     if $platform:is-windows {
         -check-windows-reserved $dir
+        # FIXME: fail if parent doesn't exist, New-Item always creates parents.
+        -wrap-powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
+    } else {
+        e:mkdir $dir
     }
-    e:mkdir $dir
 }
 
 fn makedirs [dir]{
     if $platform:is-windows {
         -check-windows-reserved $dir
+        -wrap-powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
+    } else {
+        e:mkdir '-p' $dir
     }
-    e:mkdir '-p' $dir
 }
 
 fn move [source target]{
     if $platform:is-windows {
         -check-windows-reserved $target
+        -wrap-powershell 'Move-Item' '-Path' $source '-Destination' $target
+    } else {
+        e:mv $source $target
     }
-    e:mv $source $target
 }
 
 # Returns dos or unix
@@ -114,18 +148,31 @@ fn ostype {
     }
 }
 
+# FIXME: windows port
 fn readlink [path]{
     e:readlink '-m' $path
 }
 
 fn remove [file]{
-    e:rm '-f' $file
+    if $platform:is-windows {
+        -wrap-powershell 'Remove-Item' '-Path' $file '-Force' '-Confirm:$False'
+    } else {
+        e:rm '-f' $file
+    }
 }
 
 fn removedirs [dir]{
-    e:rm '-fr' $dir
+    if $platform:is-windows {
+        -wrap-powershell 'Remove-Item' ^
+                '-Path' $dir ^
+                '-Recurse' ^
+                '-Force' '-Confirm:$False'
+    } else {
+        e:rm '-fr' $dir
+    }
 }
 
+# FIXME: implement icacl/fsutil windows port, only permission should differ.
 fn stat [path &fs=$false]{
     var def = [&]
     if $fs {
@@ -219,28 +266,47 @@ fn exists [path]{
     }
 }
 
+# NOTE: Symlinks require admin permissions on Windows.
 fn symlink [source target]{
     if $platform:is-windows {
         -check-windows-reserved $target
+        -wrap-powershell 'New-Item' ^
+                '-ItemType' 'SymbolicLink' ^
+                '-Value' $source ^
+                '-Path' $target
+    } else {
+        e:ln '-s' $source $target
     }
-    e:ln '-s' $source $target
 }
 
 fn touch [target]{
     if $platform:is-windows {
         -check-windows-reserved $target
+        -wrap-powershell 'New-Item' ^
+                '-ItemType' 'file' ^
+                '-Path' $target
+    } else {
+        e:touch $target
     }
-    e:touch $target
 }
 
+# FIXME: windows port
 fn uid {
     e:id '-u'
 }
 
 fn unlink [link]{
-    e:unlink $link
+    if $platform:is-windows {
+        remove $link
+    } else {
+        e:unlink $link
+    }
 }
 
 fn user {
-    e:id '-un'
+    if $platform:is-windows {
+        -wrap-powershell '$env:UserName'
+    } else {
+        e:id '-un'
+    }
 }
