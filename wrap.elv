@@ -14,35 +14,13 @@
 
 
 use file
+use platform
 use re
 use str
 
 
-# Captures and returns powershell errors while suppressing output on success.
-fn ps [@psCode &output=$false &cmd='powershell']{
-    var stdout = (file:pipe)
-    try {
-        var c = (external $cmd)
-        $c '-NonInteractive' '-Command' $@psCode >$stdout
-        file:close $stdout[w]
-        if $output {
-            put (str:split "\r\n" (re:replace "\r\n$" '' (slurp < $stdout)))
-        }
-        file:close $stdout[r]
-    } except exception {
-        file:close $stdout[w]
-        var error = (slurp < $stdout)
-        file:close $stdout[r]
-        fail (to-string $exception['reason'])"\n\n"$error
-    }
-}
-
-# Captures and returns powershell errors and output.
-fn ps-out [@psCode &cmd='powershell']{
-    ps &output=$true &cmd=$cmd $@psCode
-}
-
 # Captures and returns command errors while suppressing output on success.
+# NOTE: This is intended for unix commands that have separate stdout/stderr.
 fn cmd [cmd @args &output=$false]{
     var stdout = (file:pipe)
     var stderr = (file:pipe)
@@ -71,3 +49,35 @@ fn cmd-out [cmd @args]{
     cmd &output=$true $cmd $@args
 }
 
+# Commands that return errors on stdout.
+fn cmd-stdouterr [cmd @args &output=$false]{
+    var stdout = (file:pipe)
+    try {
+        var c = (external $cmd)
+        $c $@args >$stdout
+        file:close $stdout[w]
+        if $output {
+            var s = "\n"
+            if $platform:is-windows {
+                set s = "\r"$s
+            }
+            put (str:split $s (re:replace $s"$" '' (slurp < $stdout)))
+        }
+        file:close $stdout[r]
+    } except exception {
+        file:close $stdout[w]
+        var error = (slurp < $stdout)
+        file:close $stdout[r]
+        fail (to-string $exception['reason'])"\n\n"$error
+    }
+}
+
+# Captures and returns powershell errors while suppressing output on success.
+fn ps [@psCode &cmd='powershell']{
+    cmd-stdouterr $cmd '-NonInteractive' '-Command' $@psCode
+}
+
+# Captures and returns powershell errors and output.
+fn ps-out [@psCode &cmd='powershell']{
+    cmd-stdouterr &output=$true $cmd '-NonInteractive' '-Command' $@psCode
+}
