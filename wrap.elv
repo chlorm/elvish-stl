@@ -18,12 +18,12 @@ use re
 use str
 
 
-# Captures and returns powershell errors while optionally suppressing output
-# on success.
-fn powershell [@cmd &output=$false]{
+# Captures and returns powershell errors while suppressing output on success.
+fn ps [@psCode &output=$false &cmd='powershell']{
     var stdout = (file:pipe)
     try {
-        e:powershell.exe '-NonInteractive' '-Command' $@cmd >$stdout
+        var c = (external $cmd)
+        $c '-NonInteractive' '-Command' $@psCode >$stdout
         file:close $stdout[w]
         if $output {
             put (str:split "\r\n" (re:replace "\r\n$" '' (slurp < $stdout)))
@@ -37,9 +37,13 @@ fn powershell [@cmd &output=$false]{
     }
 }
 
-# Captures and returns cmd errors while optionally suppressing output on
-# success.
-fn unix [cmd @args &output=$false]{
+# Captures and returns powershell errors and output.
+fn ps-out [@psCode &cmd='powershell']{
+    ps &output=$true &cmd=$cmd $@psCode
+}
+
+# Captures and returns command errors while suppressing output on success.
+fn cmd [cmd @args &output=$false]{
     var stdout = (file:pipe)
     var stderr = (file:pipe)
     try {
@@ -49,7 +53,7 @@ fn unix [cmd @args &output=$false]{
         file:close $stdout[w]
         file:close $stderr[r]
         if $output {
-            put (str:split '\n' (re:replace '\n$' '' (slurp < $stdout)))
+            put (str:split "\n" (re:replace "\n$" '' (slurp < $stdout)))
         }
         file:close $stdout[r]
     } except exception {
@@ -61,3 +65,9 @@ fn unix [cmd @args &output=$false]{
         fail (to-string $exception['reason'])"\n\n"$error
     }
 }
+
+# Captures and returns command errors and output.
+fn cmd-out [cmd @args]{
+    cmd &output=$true $cmd $@args
+}
+

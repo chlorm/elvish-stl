@@ -82,24 +82,22 @@ fn scandir [dir]{
     var findFiles = [ ]
     if $platform:is-windows {
         set findFiles = [(
-            wrap:powershell &output=$true ^
-                'Get-ChildItem' '-Path' $dir '-File' '-Name'
+            wrap:ps-out 'Get-ChildItem' '-Path' $dir '-File' '-Name'
         )]
     } else {
         set findFiles = [(
-            wrap:unix 'find' $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
+            wrap:cmd-out 'find' $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
         )]
     }
     var files = [ (-non-empty $@findFiles) ]
     var findDirs = [ ]
     if $platform:is-windows {
         set findDirs = [(
-            wrap:powershell &output=$true ^
-                'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
+            wrap:ps-out 'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
         )]
     } else {
         set findDirs = [(
-            wrap:unix 'find' $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n'
+            wrap:cmd-out 'find' $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n'
         )]
     }
     var dirs = [ (-non-empty $@findDirs) ]
