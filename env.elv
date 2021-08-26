@@ -78,7 +78,7 @@ fn prepend [envVar path &delimiter=':']{
 fn bin-path [bin]{
     var path = $nil
     try {
-        var path = (search-external $bin)
+        set path = (search-external $bin)
     } except _ {
         fail
     }
