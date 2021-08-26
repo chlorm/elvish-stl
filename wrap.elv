@@ -36,6 +36,7 @@ fn powershell [@cmd &output=$false]{
         fail $e
     }
 }
+
 # Captures and returns cmd errors while optionally suppressing output on
 # success.
 fn unix [cmd @args &output=$false]{

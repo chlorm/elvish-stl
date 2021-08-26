@@ -18,7 +18,7 @@ use github.com/chlorm/elvish-stl/path
 
 
 # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
-var WINDOWS-RESERVED-NAMES = [
+var RESERVED-NAMES = [
     'AUX'
     'COM1'
     'COM2'
@@ -45,7 +45,7 @@ var WINDOWS-RESERVED-NAMES = [
 
 fn reserved [path]{
     var b = (path:basename $path)
-    for i $WINDOWS-RESERVED-NAMES {
+    for i $RESERVED-NAMES {
         if (==s $i (str:to-upper $b)) {
             fail 'Windows reserved name: '$i
         }
