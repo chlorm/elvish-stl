@@ -21,19 +21,19 @@ use str
 # Captures and returns powershell errors while optionally suppressing output
 # on success.
 fn powershell [@cmd &output=$false]{
-    var out = (file:pipe)
+    var stdout = (file:pipe)
     try {
-        e:powershell.exe '-NonInteractive' '-Command' $@cmd >$out
-        file:close $out[w]
+        e:powershell.exe '-NonInteractive' '-Command' $@cmd >$stdout
+        file:close $stdout[w]
         if $output {
-            put (str:split "\r\n" (re:replace "\r\n$" '' (slurp < $out)))
+            put (str:split "\r\n" (re:replace "\r\n$" '' (slurp < $stdout)))
         }
-        file:close $out[r]
-    } except _ {
-        file:close $out[w]
-        var e = (slurp < $out)
-        file:close $out[r]
-        fail $e
+        file:close $stdout[r]
+    } except exception {
+        file:close $stdout[w]
+        var error = (slurp < $stdout)
+        file:close $stdout[r]
+        fail (to-string $exception['reason'])"\n\n"$error
     }
 }
 
@@ -52,12 +52,12 @@ fn unix [cmd @args &output=$false]{
             put (str:split '\n' (re:replace '\n$' '' (slurp < $stdout)))
         }
         file:close $stdout[r]
-    } except _ {
+    } except exception {
         file:close $stdout[w]
         file:close $stdout[r]
         file:close $stderr[w]
         var error = (slurp < $stderr)
         file:close $stderr[r]
-        fail $error
+        fail (to-string $exception['reason'])"\n\n"$error
     }
 }
