@@ -17,6 +17,7 @@ use platform
 use str
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/windows
+use github.com/chlorm/elvish-stl/wrap
 
 
 var NULL = '/dev/null'
@@ -26,67 +27,63 @@ if $platform:is-windows {
 
 # FIXME: windows port
 fn chmod [perm target]{
-    e:chmod $perm $target
+    wrap:unix 'chmod' $perm $target
 }
 
 # FIXME: windows port
 fn chown [user-group target]{
-    e:chown $user-group $target
+    wrap:unix 'chown' $user-group $target
 }
 
 fn copy [source target]{
     if $platform:is-windows {
-        windows:check-reserved $target
-        windows:wrap-powershell ^
-            'Copy-Item' '-Path' $source '-Destination' $target
+        windows:reserved $target
+        wrap:powershell 'Copy-Item' '-Path' $source '-Destination' $target
     } else {
-        e:cp $source $target
+        wrap:unix 'cp' $source $target
     }
 }
 
 # FIXME: windows port
 fn gid {
-    e:id '-g'
+    wrap:unix &output=$true 'id' '-g'
 }
 
 fn link [source target]{
     if $platform:is-windows {
-        windows:check-reserved $target
-        windows:wrap-powershell 'New-Item' ^
-                '-ItemType' 'HardLink' ^
-                '-Value' $source ^
-                '-Path' $target
+        windows:reserved $target
+        wrap:powershell 'New-Item' '-ItemType' 'HardLink' ^
+            '-Value' $source '-Path' $target
     } else {
-        e:ln $source $target
+        wrap:unix 'ln' $source $target
     }
 }
 
 fn makedir [dir]{
     if $platform:is-windows {
-        windows:check-reserved $dir
+        windows:reserved $dir
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
-        windows:wrap-powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
+        wrap:powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
     } else {
-        e:mkdir $dir
+        wrap:unix 'mkdir' $dir
     }
 }
 
 fn makedirs [dir]{
     if $platform:is-windows {
-        windows:check-reserved $dir
-        windows:wrap-powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
+        windows:reserved $dir
+        wrap:powershell 'New-Item' '-ItemType' 'directory' '-Path' $dir
     } else {
-        e:mkdir '-p' $dir
+        wrap:unix 'mkdir' '-p' $dir
     }
 }
 
 fn move [source target]{
     if $platform:is-windows {
-        windows:check-reserved $target
-        windows:wrap-powershell ^
-            'Move-Item' '-Path' $source '-Destination' $target
+        windows:reserved $target
+        wrap:powershell 'Move-Item' '-Path' $source '-Destination' $target
     } else {
-        e:mv $source $target
+        wrap:unix 'mv' $source $target
     }
 }
 
@@ -101,26 +98,23 @@ fn ostype {
 
 # FIXME: windows port
 fn readlink [path]{
-    e:readlink '-m' $path
+    wrap:unix &output=$true 'readlink' '-m' $path
 }
 
 fn remove [file]{
     if $platform:is-windows {
-        windows:wrap-powershell ^
-            'Remove-Item' '-Path' $file '-Force' '-Confirm:$False'
+        wrap:powershell 'Remove-Item' '-Path' $file '-Force' '-Confirm:$False'
     } else {
-        e:rm '-f' $file
+        wrap:unix 'rm' '-f' $file
     }
 }
 
 fn removedirs [dir]{
     if $platform:is-windows {
-        windows:wrap-powershell 'Remove-Item' ^
-                '-Path' $dir ^
-                '-Recurse' ^
-                '-Force' '-Confirm:$False'
+        wrap:powershell ^
+            'Remove-Item' '-Path' $dir '-Recurse' '-Force' '-Confirm:$False'
     } else {
-        e:rm '-fr' $dir
+        wrap:unix 'rm' '-fr' $dir
     }
 }
 
@@ -221,42 +215,40 @@ fn exists [path]{
 # NOTE: Symlinks require admin permissions on Windows.
 fn symlink [source target]{
     if $platform:is-windows {
-        windows:check-reserved $target
-        windows:wrap-powershell ^
-            'New-Item' '-ItemType' 'SymbolicLink' ^
-                '-Value' $source '-Path' $target
+        windows:reserved $target
+        wrap:powershell 'New-Item' '-ItemType' 'SymbolicLink' ^
+            '-Value' $source '-Path' $target
     } else {
-        e:ln '-s' $source $target
+        wrap:unix 'ln' '-s' $source $target
     }
 }
 
 fn touch [target]{
     if $platform:is-windows {
-        windows:check-reserved $target
-        windows:wrap-powershell ^
-            'New-Item' '-ItemType' 'file' '-Path' $target
+        windows:reserved $target
+        wrap:powershell 'New-Item' '-ItemType' 'file' '-Path' $target
     } else {
-        e:touch $target
+        wrap:unix 'touch' $target
     }
 }
 
 # FIXME: windows port
 fn uid {
-    e:id '-u'
+    wrap:unix &output=$true 'id' '-u'
 }
 
 fn unlink [link]{
     if $platform:is-windows {
         remove $link
     } else {
-        e:unlink $link
+        wrap:unix 'unlink' $link
     }
 }
 
 fn user {
     if $platform:is-windows {
-        windows:wrap-powershell &output=$true '$env:UserName'
+        wrap:powershell &output=$true '$env:UserName'
     } else {
-        e:id '-un'
+        wrap:unix &output=$true 'id' '-un'
     }
 }

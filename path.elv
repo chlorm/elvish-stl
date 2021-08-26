@@ -17,7 +17,7 @@ use path
 use platform
 use str
 use github.com/chlorm/elvish-stl/list
-use github.com/chlorm/elvish-stl/windows
+use github.com/chlorm/elvish-stl/wrap
 
 
 var DELIMITER = '/'
@@ -82,24 +82,24 @@ fn scandir [dir]{
     var findFiles = [ ]
     if $platform:is-windows {
         set findFiles = [(
-            windows:wrap-powershell &output=$true ^
+            wrap:powershell &output=$true ^
                 'Get-ChildItem' '-Path' $dir '-File' '-Name'
         )]
     } else {
         set findFiles = [(
-            e:find $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
+            wrap:unix 'find' $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
         )]
     }
     var files = [ (-non-empty $@findFiles) ]
     var findDirs = [ ]
     if $platform:is-windows {
         set findDirs = [(
-            windows:wrap-powershell &output=$true ^
+            wrap:powershell &output=$true ^
                 'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
         )]
     } else {
         set findDirs = [(
-            e:find $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n'
+            wrap:unix 'find' $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n'
         )]
     }
     var dirs = [ (-non-empty $@findDirs) ]

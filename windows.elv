@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Cody Opel <cwopel@chlorm.net>
+# Copyright (c) 2020, Cody Opel <cwopel@chlorm.net>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
 # limitations under the License.
 
 
-use file
 use str
 use github.com/chlorm/elvish-stl/path
 
@@ -44,30 +43,11 @@ var WINDOWS-RESERVED-NAMES = [
     'PRN'
 ]
 
-fn check-reserved [path]{
+fn reserved [path]{
     var b = (path:basename $path)
     for i $WINDOWS-RESERVED-NAMES {
         if (==s $i (str:to-upper $b)) {
             fail 'Windows reserved name: '$i
         }
-    }
-}
-
-# This wrapper captures and returns powershell errors while optionally
-# suppressing output on success.
-fn wrap-powershell [@command &output=$false]{
-    var p = (file:pipe)
-    try {
-        e:powershell.exe '-NonInteractive' '-Command' $@command >$p
-        file:close $p[w]
-        if $output {
-            put (str:split "\r\n" (slurp < $p))
-        }
-        file:close $p[r]
-    } except _ {
-        file:close $p[w]
-        var e = (slurp < $p)
-        file:close $p[r]
-        fail $e
     }
 }
