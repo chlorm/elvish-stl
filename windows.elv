@@ -15,6 +15,7 @@
 
 use str
 use github.com/chlorm/elvish-stl/path
+use github.com/chlorm/elvish-stl/wrap
 
 
 # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
@@ -49,5 +50,15 @@ fn reserved [path]{
         if (==s $i (str:to-upper $b)) {
             fail 'Windows reserved name: '$i
         }
+    }
+}
+
+fn is-admin {
+    var b = (wrap:ps-out ^
+        '[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")')
+    if (==s $b 'True') {
+        put $true
+    } else {
+        put $false
     }
 }
