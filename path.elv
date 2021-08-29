@@ -37,6 +37,15 @@ fn dirname [path_]{
     path:dir $path_
 }
 
+fn escape [path_]{
+    if $platform:is-windows {
+        # Windows uses ` to escape spaces in paths.
+        str:replace ' ' '` ' $path_
+    } else {
+        put $path_
+    }
+}
+
 fn home {
     if $platform:is-windows {
         put (str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ])
@@ -49,11 +58,17 @@ fn join [@objects]{
     put (path:clean (str:join $DELIMITER $objects))
 }
 
+fn unescape [path_]{
+    if $platform:is-windows {
+        str:replace '` ' ' ' $path_
+    } else {
+        put $path_
+    }
+}
+
 fn scandir [dir]{
     # Remove path escapes, see comment below
-    if $platform:is-windows {
-        set dir = (str:replace '` ' ' ' $dir)
-    }
+    set dir = (unescape $dir)
 
     var p = $pwd
     try {
@@ -63,12 +78,9 @@ fn scandir [dir]{
     }
     cd $p
 
-    # Windows uses ` to escape spaces in paths.
     # This must come after cd because elvish's internal cd escapes paths
     # automatically.
-    if $platform:is-windows {
-        set dir = (str:replace ' ' '` ' $dir)
-    }
+    set dir = (escape $dir)
 
     # find returns an empty string for matches that have been filtered out.
     fn -non-empty [@s]{
