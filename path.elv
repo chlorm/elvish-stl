@@ -33,6 +33,10 @@ fn basename [path_]{
     path:base $path_
 }
 
+fn dirname [path_]{
+    path:dir $path_
+}
+
 fn home {
     if $platform:is-windows {
         put (str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ])
@@ -43,10 +47,6 @@ fn home {
 
 fn join [@objects]{
     put (path:clean (str:join $DELIMITER $objects))
-}
-
-fn dirname [path_]{
-    path:dir $path_
 }
 
 fn scandir [dir]{
