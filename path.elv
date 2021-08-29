@@ -37,11 +37,16 @@ fn dirname [path_]{
     path:dir $path_
 }
 
-fn escape [path_]{
-    if $platform:is-windows {
+fn escape [path_ &unix=$true]{
+    if (and $platform:is-windows (not $unix)) {
         # Windows uses ` to escape spaces in paths.
         str:replace ' ' '` ' $path_
     } else {
+        # Git on Windows uses MSYS2, so it expects unix-like DOS paths.
+        if $platform:is-windows {
+            set path_ = (str:replace '\' '\\' $path_)
+            set path_ = (str:replace ' ' '\ ' $path_)
+        }
         put $path_
     }
 }
@@ -58,10 +63,16 @@ fn join [@objects]{
     put (path:clean (str:join $DELIMITER $objects))
 }
 
-fn unescape [path_]{
-    if $platform:is-windows {
+fn unescape [path_ &unix=$true]{
+    if (and $platform:is-windows (not $unix)) {
+        # Windows uses ` to escape spaces in paths.
         str:replace '` ' ' ' $path_
     } else {
+        # Git on Windows uses MSYS2, so it expects unix-like DOS paths.
+        if $platform:is-windows {
+            set path_ = (str:replace '\ ' ' ' $path_)
+            set path_ = (str:replace '\\' '\' $path_)
+        }
         put $path_
     }
 }
