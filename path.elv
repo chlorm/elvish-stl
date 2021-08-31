@@ -37,18 +37,66 @@ fn dirname [path_]{
     path:dir $path_
 }
 
-fn escape [path_ &unix=$false]{
+fn escape [path_ &unix=$false &input=$false &reverse=$false]{
     if (and $platform:is-windows (not $unix)) {
-        # Windows uses ` to escape spaces in paths.
-        str:replace ' ' '` ' $path_
+        # WARNING: Improperly escaped strings fail powershell functions
+        #          silently for an unknown reason.
+        # FIXME: this is missing characters that need to be escaped.
+        # Special characters have to be double escaped.
+        var specialChars = [
+            '['
+            ']'
+        ]
+        var single = [
+            '`'  # Must come first
+            ''''
+            ' '  # Space
+        ]
+        var double = [ ]
+        if $input {
+            set double = $specialChars
+        } else {
+            set single = [
+                $@single
+                $@specialChars
+            ]
+        }
+        for i $double {
+            if $reverse {
+                set path_ = (str:replace '``'$i $i $path_)
+            } else {
+                set path_ = (str:replace $i '``'$i $path_)
+            }
+        }
+        for i $single {
+            if $reverse {
+                set path_ = (str:replace '`'$i $i $path_)
+            } else {
+                set path_ = (str:replace $i '`'$i $path_)
+            }
+        }
+        put $path_
     } else {
         # Git on Windows uses MSYS2, so it expects unix-like DOS paths.
         if $platform:is-windows {
-            set path_ = (str:replace '\' '\\' $path_)
-            set path_ = (str:replace ' ' '\ ' $path_)
+            if $reverse {
+                set path_ = (str:replace '\ ' ' ' $path_)
+                set path_ = (str:replace '\\' '\' $path_)
+            } else {
+                set path_ = (str:replace '\' '\\' $path_)
+                set path_ = (str:replace ' ' '\ ' $path_)
+            }
         }
         put $path_
     }
+}
+
+fn escape-input [path_]{
+    escape &input=$true $path_
+}
+
+fn escape-unixlike [path_]{
+    escape &unix=$true $path_
 }
 
 fn home {
@@ -63,23 +111,21 @@ fn join [@objects]{
     put (path:clean (str:join $DELIMITER $objects))
 }
 
-fn unescape [path_ &unix=$false]{
-    if (and $platform:is-windows (not $unix)) {
-        # Windows uses ` to escape spaces in paths.
-        str:replace '` ' ' ' $path_
-    } else {
-        # Git on Windows uses MSYS2, so it expects unix-like DOS paths.
-        if $platform:is-windows {
-            set path_ = (str:replace '\ ' ' ' $path_)
-            set path_ = (str:replace '\\' '\' $path_)
-        }
-        put $path_
-    }
+fn unescape [path_]{
+    escape &reverse=$true $path_
+}
+
+fn unescape-input [path_]{
+    escape &reverse=$true &input=$true $path_
+}
+
+fn unescape-unixlike [path_]{
+    escape &reverse=$true &unix=$true $path_
 }
 
 fn scandir [dir]{
     # Remove path escapes, see comment below
-    set dir = (unescape $dir)
+    set dir = (unescape-input $dir)
 
     var p = $pwd
     try {
@@ -91,7 +137,7 @@ fn scandir [dir]{
 
     # This must come after cd because elvish's internal cd escapes paths
     # automatically.
-    set dir = (escape $dir)
+    set dir = (escape-input $dir)
 
     # find returns an empty string for matches that have been filtered out.
     fn -non-empty [@s]{
