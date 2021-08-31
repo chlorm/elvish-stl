@@ -37,7 +37,7 @@ fn dirname [path_]{
     path:dir $path_
 }
 
-fn escape [path_ &unix=$true]{
+fn escape [path_ &unix=$false]{
     if (and $platform:is-windows (not $unix)) {
         # Windows uses ` to escape spaces in paths.
         str:replace ' ' '` ' $path_
@@ -63,7 +63,7 @@ fn join [@objects]{
     put (path:clean (str:join $DELIMITER $objects))
 }
 
-fn unescape [path_ &unix=$true]{
+fn unescape [path_ &unix=$false]{
     if (and $platform:is-windows (not $unix)) {
         # Windows uses ` to escape spaces in paths.
         str:replace '` ' ' ' $path_
