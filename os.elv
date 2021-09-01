@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use path path_
 use platform
 use str
 use github.com/chlorm/elvish-stl/path
@@ -103,9 +104,8 @@ fn ostype {
     }
 }
 
-# FIXME: windows port
 fn readlink [path]{
-    wrap:cmd-out 'readlink' '-m' $path
+    path:absolute (path_:eval-symlinks $path)
 }
 
 fn remove [file]{
