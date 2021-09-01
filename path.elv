@@ -33,6 +33,10 @@ fn basename [path_]{
     path:base $path_
 }
 
+fn clean [path_]{
+    path:clean $path_
+}
+
 fn dirname [path_]{
     path:dir $path_
 }
