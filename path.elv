@@ -41,12 +41,19 @@ fn dirname [path_]{
     path:dir $path_
 }
 
-fn escape [path_ &unix=$false &input=$false &reverse=$false]{
-    if (and $platform:is-windows (not $unix)) {
+fn escape [path_ &unix=$false &input=$false &invert=$false]{
+    fn -order [a b]{
+        if $invert {
+            put $b $a
+        } else {
+            put $a $b
+        }
+    }
+
+    if (and $platform:is-windows (not $unix)) {  # DOS
         # WARNING: Improperly escaped strings fail powershell functions
         #          silently for an unknown reason.
         # FIXME: this is missing characters that need to be escaped.
-        # Special characters have to be double escaped.
         var specialChars = [
             '['
             ']'
@@ -58,6 +65,7 @@ fn escape [path_ &unix=$false &input=$false &reverse=$false]{
         ]
         var double = [ ]
         if $input {
+            # Special characters have to be double escaped when passed as input.
             set double = $specialChars
         } else {
             set single = [
@@ -66,30 +74,17 @@ fn escape [path_ &unix=$false &input=$false &reverse=$false]{
             ]
         }
         for i $double {
-            if $reverse {
-                set path_ = (str:replace '``'$i $i $path_)
-            } else {
-                set path_ = (str:replace $i '``'$i $path_)
-            }
+            set path_ = (str:replace (-order $i '``'$i) $path_)
         }
         for i $single {
-            if $reverse {
-                set path_ = (str:replace '`'$i $i $path_)
-            } else {
-                set path_ = (str:replace $i '`'$i $path_)
-            }
+            set path_ = (str:replace (-order $i '`'$i) $path_)
         }
         put $path_
-    } else {
+    } else {  # Unix-like
         # Git on Windows uses MSYS2, so it expects unix-like DOS paths.
         if $platform:is-windows {
-            if $reverse {
-                set path_ = (str:replace '\ ' ' ' $path_)
-                set path_ = (str:replace '\\' '\' $path_)
-            } else {
-                set path_ = (str:replace '\' '\\' $path_)
-                set path_ = (str:replace ' ' '\ ' $path_)
-            }
+            set path_ = (str:replace (-order '\' '\\') $path_)
+            set path_ = (str:replace (-order ' ' '\ ') $path_)
         }
         put $path_
     }
@@ -116,15 +111,15 @@ fn join [@objects]{
 }
 
 fn unescape [path_]{
-    escape &reverse=$true $path_
+    escape &invert=$true $path_
 }
 
 fn unescape-input [path_]{
-    escape &reverse=$true &input=$true $path_
+    escape &invert=$true &input=$true $path_
 }
 
 fn unescape-unixlike [path_]{
-    escape &reverse=$true &unix=$true $path_
+    escape &invert=$true &unix=$true $path_
 }
 
 fn scandir [dir]{
