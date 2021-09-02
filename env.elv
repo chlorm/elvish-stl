@@ -20,16 +20,14 @@ use github.com/chlorm/elvish-stl/list
 
 
 fn get-value-or-nil [envVar]{
-    var envVarVal = $nil
     try {
-        set envVarVal = (get-env $envVar)
-        if (or (eq $envVarVal $nil)
-               (==s $envVarVal '')) {
+        var t = (get-env $envVar)
+        if (re:match '^([\s]+)?$' $t) {
             fail
         }
-        put $envVarVal
+        put $t
     } except _ {
-        put $envVarVal
+        put $nil
     }
 }
 
