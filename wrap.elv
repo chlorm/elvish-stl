@@ -14,9 +14,9 @@
 
 
 use file
-use platform
 use re
 use str
+use github.com/chlorm/elvish-stl/platform
 
 
 # Captures and returns command errors while suppressing output on success.

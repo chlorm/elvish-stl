@@ -14,9 +14,9 @@
 
 
 use path
-use platform
 use str
 use github.com/chlorm/elvish-stl/list
+use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/wrap
 
 
