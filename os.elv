@@ -28,12 +28,12 @@ if $platform:is-windows {
 
 # FIXME: windows port
 fn chmod [perm target]{
-    wrap:cmd 'chmod' $perm $target
+    wrap:cmd 'chmod' '-v' $perm $target
 }
 
 # FIXME: windows port
 fn chown [user-group target]{
-    wrap:cmd 'chown' $user-group $target
+    wrap:cmd 'chown' '-v' $user-group $target
 }
 
 fn copy [source target]{
@@ -43,7 +43,7 @@ fn copy [source target]{
             '-Path' (path:escape-input $source) ^
             '-Destination' (path:escape $target)
     } else {
-        wrap:cmd 'cp' $source $target
+        wrap:cmd 'cp' '-v' $source $target
     }
 }
 
@@ -59,7 +59,7 @@ fn link [source target]{
             '-Value' (path:escape-input $source) ^
             '-Path' (path:escape $target)
     } else {
-        wrap:cmd 'ln' $source $target
+        wrap:cmd 'ln' '-v' $source $target
     }
 }
 
@@ -70,7 +70,7 @@ fn makedir [dir]{
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input $dir)
     } else {
-        wrap:cmd 'mkdir' $dir
+        wrap:cmd 'mkdir' '-v' $dir
     }
 }
 
@@ -80,7 +80,7 @@ fn makedirs [dir]{
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input $dir)
     } else {
-        wrap:cmd 'mkdir' '-p' $dir
+        wrap:cmd 'mkdir' '-pv' $dir
     }
 }
 
@@ -91,7 +91,7 @@ fn move [source target]{
             '-Path' (path:escape-input $source) ^
             '-Destination' (path:escape $target)
     } else {
-        wrap:cmd 'mv' $source $target
+        wrap:cmd 'mv' '-v' $source $target
     }
 }
 
@@ -113,7 +113,7 @@ fn remove [file]{
         wrap:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
             '-Path' (path:escape-input $file)
     } else {
-        wrap:cmd 'rm' '-f' $file
+        wrap:cmd 'rm' '-fv' $file
     }
 }
 
@@ -122,7 +122,7 @@ fn removedirs [dir]{
         wrap:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
             '-Path' (path:escape-input $dir)
     } else {
-        wrap:cmd 'rm' '-fr' $dir
+        wrap:cmd 'rm' '-frv' $dir
     }
 }
 
@@ -228,7 +228,7 @@ fn symlink [source target]{
             '-Value' (path:escape-input $source) ^
             '-Path' (path:escape $target)
     } else {
-        wrap:cmd 'ln' '-s' $source $target
+        wrap:cmd 'ln' '-sv' $source $target
     }
 }
 
