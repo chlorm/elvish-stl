@@ -171,7 +171,7 @@ fn stat [path &fs=$false]{
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    var s = [ (str:split ',' (wrap:cmd-out stat $@cmdArgs $path)) ]
+    var s = [ (str:split ',' (wrap:cmd-out 'stat' $@cmdArgs $path)) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
