@@ -17,6 +17,7 @@ use platform
 use re
 use str
 use github.com/chlorm/elvish-stl/list
+use github.com/chlorm/elvish-stl/path
 
 
 fn get-value-or-nil [envVar]{
@@ -87,7 +88,7 @@ fn bin-path [bin]{
 
     # search-external does not escape paths
     if $platform:is-windows {
-        set path = (re:replace '\\' '\\' $path)
+        set path = (path:escape $path)
     }
 
     put $path
