@@ -39,7 +39,7 @@ fn -delimiter-valid [delimiter]{
     }
 }
 
-fn has-path [envVar path &delimiter=':']{
+fn has-elem [envVar elem &delimiter=':']{
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         put $false
@@ -47,7 +47,7 @@ fn has-path [envVar path &delimiter=':']{
     }
 
     -delimiter-valid $delimiter
-    put (list:contains [ (str:split $delimiter $envVarVal) ] $path)
+    put (list:contains [ (str:split $delimiter $envVarVal) ] $elem)
 }
 
 # Generic append/prepend
@@ -55,7 +55,7 @@ fn -pend-generic [envVar path &delimiter=$nil &pre=$false]{
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         set-env $envVar $path
-    } elif (has-path $envVar $path &delimiter=$delimiter) {
+    } elif (has-elem $envVar $path &delimiter=$delimiter) {
         # Don't pollute paths with duplicates.
         return
     } elif $pre {
