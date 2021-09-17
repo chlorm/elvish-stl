@@ -27,3 +27,7 @@ fn find [regex string]{
         put (-find-obj $i)
     }
 }
+
+fn is-empty [string]{
+    re:match '^([\s]+)?$' $string
+}
