@@ -20,6 +20,10 @@ use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/path
 
 
+fn exists [envVar]{
+    bool ?(var _ = (get-env $envVar))
+}
+
 fn get-value-or-nil [envVar]{
     try {
         var t = (get-env $envVar)
