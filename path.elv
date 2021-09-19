@@ -62,6 +62,8 @@ fn escape [path_ &unix=$false &input=$false &invert=$false]{
             '`'  # Must come first
             ''''
             ' '  # Space
+            '('
+            ')'
         ]
         var double = [ ]
         if $input {
