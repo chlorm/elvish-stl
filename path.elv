@@ -65,6 +65,12 @@ fn escape [path_ &unix=$false &input=$false &invert=$false]{
             '('
             ')'
         ]
+        var unicodeQuoteFinalPunctuationChars = [ (regex:find '\p{Pf}' $path_) ]
+        for i $unicodeQuoteFinalPunctuationChars {
+            if (not (has-value $single $i)) {
+                set single = [ $@single $i ]
+            }
+        }
         var double = [ ]
         if $input {
             # Special characters have to be double escaped when passed as input.
