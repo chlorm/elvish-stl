@@ -64,6 +64,7 @@ fn escape [path_ &unix=$false &input=$false &invert=$false]{
             ' '  # Space
             '('
             ')'
+            ','
         ]
         var unicodeQuoteFinalPunctuationChars = [ (regex:find '\p{Pf}' $path_) ]
         for i $unicodeQuoteFinalPunctuationChars {
