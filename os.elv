@@ -27,16 +27,16 @@ if $platform:is-windows {
 }
 
 # FIXME: windows port
-fn chmod [perm target]{
+fn chmod {|perm target|
     wrap:cmd 'chmod' '-v' $perm $target
 }
 
 # FIXME: windows port
-fn chown [user-group target]{
+fn chown {|user-group target|
     wrap:cmd 'chown' '-v' $user-group $target
 }
 
-fn copy [source target]{
+fn copy {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Copy-Item' ^
@@ -52,7 +52,7 @@ fn gid {
     wrap:cmd-out 'id' '-g'
 }
 
-fn link [source target]{
+fn link {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'HardLink' ^
@@ -63,7 +63,7 @@ fn link [source target]{
     }
 }
 
-fn makedir [dir]{
+fn makedir {|dir|
     if $platform:is-windows {
         windows:reserved $dir
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
@@ -74,7 +74,7 @@ fn makedir [dir]{
     }
 }
 
-fn makedirs [dir]{
+fn makedirs {|dir|
     if $platform:is-windows {
         windows:reserved $dir
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
@@ -84,7 +84,7 @@ fn makedirs [dir]{
     }
 }
 
-fn move [source target]{
+fn move {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Move-Item' ^
@@ -104,11 +104,11 @@ fn ostype {
     }
 }
 
-fn readlink [path]{
+fn readlink {|path|
     path:absolute (path_:eval-symlinks $path)
 }
 
-fn remove [file]{
+fn remove {|file|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
             '-Path' (path:escape-input $file)
@@ -117,7 +117,7 @@ fn remove [file]{
     }
 }
 
-fn removedirs [dir]{
+fn removedirs {|dir|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
             '-Path' (path:escape-input $dir)
@@ -127,7 +127,7 @@ fn removedirs [dir]{
 }
 
 # FIXME: implement icacl/fsutil windows port, only permission should differ.
-fn stat [path &fs=$false]{
+fn stat {|path &fs=$false|
     var def = [&]
     if $fs {
         set def = [
@@ -187,11 +187,11 @@ fn stat [path &fs=$false]{
     put $stat
 }
 
-fn statfs [path]{
+fn statfs {|path|
     stat &fs=$true $path
 }
 
-fn -is-type [type path]{
+fn -is-type {|type path|
     var i = $true
     try {
         if (!=s $type (stat $path 2>&-)[filetype]) {
@@ -203,15 +203,15 @@ fn -is-type [type path]{
     put $i
 }
 
-fn is-blkdev [path]{ -is-type 'block device' $path }
-fn is-chardev [path]{ -is-type 'character device' $path }
-fn is-dir [path]{ -is-type 'directory' $path }
-fn is-file [path]{ -is-type 'regular file' $path }
-fn is-pipe [path]{ -is-type 'FIFO/pipe' $path }
-fn is-socket [path]{ -is-type 'socket' $path }
-fn is-symlink [path]{ -is-type 'symbolic link' $path }
-fn is-unknown [path]{ -is-type 'unknown?' $path }
-fn exists [path]{
+fn is-blkdev {|path| -is-type 'block device' $path }
+fn is-chardev {|path| -is-type 'character device' $path }
+fn is-dir {|path| -is-type 'directory' $path }
+fn is-file {|path| -is-type 'regular file' $path }
+fn is-pipe {|path| -is-type 'FIFO/pipe' $path }
+fn is-socket {|path| -is-type 'socket' $path }
+fn is-symlink {|path| -is-type 'symbolic link' $path }
+fn is-unknown {|path| -is-type 'unknown?' $path }
+fn exists {|path|
     try {
         var _ = (> (count (stat $path)) 0)
         put $true
@@ -221,7 +221,7 @@ fn exists [path]{
 }
 
 # NOTE: Symlinks require admin permissions on Windows.
-fn symlink [source target]{
+fn symlink {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
@@ -232,7 +232,7 @@ fn symlink [source target]{
     }
 }
 
-fn touch [target]{
+fn touch {|target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'file' ^
@@ -247,7 +247,7 @@ fn uid {
     wrap:cmd-out 'id' '-u'
 }
 
-fn unlink [link]{
+fn unlink {|link|
     if $platform:is-windows {
         remove $link
     } else {

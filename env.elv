@@ -20,11 +20,11 @@ use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
 
 
-fn exists [envVar]{
+fn exists {|envVar|
     bool ?(var _ = (get-env $envVar))
 }
 
-fn get-value-or-nil [envVar]{
+fn get-value-or-nil {|envVar|
     try {
         var t = (get-env $envVar)
         if (re:match '^([\s]+)?$' $t) {
@@ -36,7 +36,7 @@ fn get-value-or-nil [envVar]{
     }
 }
 
-fn -delimiter-valid [delimiter]{
+fn -delimiter-valid {|delimiter|
     if (==s $delimiter '') {
         fail 'Cannot delimit path by empty string'
     } elif (eq $delimiter $nil) {
@@ -44,7 +44,7 @@ fn -delimiter-valid [delimiter]{
     }
 }
 
-fn has-elem [envVar elem &delimiter=':']{
+fn has-elem {|envVar elem &delimiter=':'|
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         put $false
@@ -56,7 +56,7 @@ fn has-elem [envVar elem &delimiter=':']{
 }
 
 # Generic append/prepend
-fn -pend-generic [envVar path &delimiter=$nil &pre=$false]{
+fn -pend-generic {|envVar path &delimiter=$nil &pre=$false|
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         set-env $envVar $path
@@ -70,15 +70,15 @@ fn -pend-generic [envVar path &delimiter=$nil &pre=$false]{
     }
 }
 
-fn append [envVar path &delimiter=':']{
+fn append {|envVar path &delimiter=':'|
     -pend-generic $envVar $path &delimiter=$delimiter &pre=$false
 }
 
-fn prepend [envVar path &delimiter=':']{
+fn prepend {|envVar path &delimiter=':'|
     -pend-generic $envVar $path &delimiter=$delimiter &pre=$true
 }
 
-fn bin-path [bin]{
+fn bin-path {|bin|
     var path = $nil
     try {
         set path = (search-external $bin)

@@ -17,17 +17,17 @@ use re
 
 
 # Returns the match string from an re:find object
-fn -find-obj [obj]{
+fn -find-obj {|obj|
     put $obj['groups'][-1..][0]['text']
 }
 
 # Returns a string instead of an object like re:find
-fn find [regex string]{
+fn find {|regex string|
     for i [ (re:find $regex $string) ] {
         put (-find-obj $i)
     }
 }
 
-fn is-empty [string]{
+fn is-empty {|string|
     re:match '^([\s]+)?$' $string
 }

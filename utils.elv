@@ -21,7 +21,7 @@ use github.com/chlorm/elvish-stl/path
 
 # env-var is a comma separated environment variable of preferred commands.
 # cmds is a list of fallback commands if none exist in env-var.
-fn get-preferred-cmd [envVar cmds]{
+fn get-preferred-cmd {|envVar cmds|
     var orig = (to-string $cmds)
 
     try {
@@ -47,7 +47,7 @@ fn get-preferred-cmd [envVar cmds]{
     put $cmd
 }
 
-fn test-writeable [dir]{
+fn test-writeable {|dir|
     try {
         var file = (path:join $dir 'test-write-file')
         if (os:exists $file) {

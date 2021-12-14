@@ -21,7 +21,7 @@ use github.com/chlorm/elvish-stl/platform
 
 # Captures and returns command errors while suppressing output on success.
 # NOTE: This is intended for unix commands that have separate stdout/stderr.
-fn cmd [cmd @args &output=$false]{
+fn cmd {|cmd @args &output=$false|
     var stdout = (file:pipe)
     var stderr = (file:pipe)
     try {
@@ -45,12 +45,12 @@ fn cmd [cmd @args &output=$false]{
 }
 
 # Captures and returns command errors and output.
-fn cmd-out [cmd @args]{
+fn cmd-out {|cmd @args|
     cmd &output=$true $cmd $@args
 }
 
 # Commands that return errors on stdout.
-fn cmd-stdouterr [cmd @args &output=$false]{
+fn cmd-stdouterr {|cmd @args &output=$false|
     var stdout = (file:pipe)
     try {
         var c = (external $cmd)
@@ -73,11 +73,11 @@ fn cmd-stdouterr [cmd @args &output=$false]{
 }
 
 # Captures and returns powershell errors while suppressing output on success.
-fn ps [@psCode &cmd='powershell']{
+fn ps {|@psCode &cmd='powershell'|
     cmd-stdouterr $cmd '-NonInteractive' '-Command' $@psCode
 }
 
 # Captures and returns powershell errors and output.
-fn ps-out [@psCode &cmd='powershell']{
+fn ps-out {|@psCode &cmd='powershell'|
     cmd-stdouterr &output=$true $cmd '-NonInteractive' '-Command' $@psCode
 }

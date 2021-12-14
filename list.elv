@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-fn contains [list value]{
+fn contains {|list value|
     var hasValue = $false
     for i $list {
         if (eq $i $value) {
@@ -24,7 +24,7 @@ fn contains [list value]{
     put $hasValue
 }
 
-fn drop [list elem]{
+fn drop {|list elem|
     var newList = [ ]
     for i $list {
         if (!=s $elem $i) {
@@ -34,7 +34,7 @@ fn drop [list elem]{
     put $newList
 }
 
-fn reverse [list]{
+fn reverse {|list|
     var newList = [ ]
     for i $list {
         set newList = [ $i $@newList ]

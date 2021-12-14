@@ -16,10 +16,10 @@
 use str
 
 
-fn open [file]{
+fn open {|file|
     put (slurp < $file)
 }
 
-fn cat [file]{
+fn cat {|file|
     put (str:split "\n" (open $file))
 }

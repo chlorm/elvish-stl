@@ -25,24 +25,24 @@ if $platform:is-windows {
     set DELIMITER = '\'
 }
 
-fn absolute [path_]{
+fn absolute {|path_|
     path:abs $path_
 }
 
-fn basename [path_]{
+fn basename {|path_|
     path:base $path_
 }
 
-fn clean [path_]{
+fn clean {|path_|
     path:clean $path_
 }
 
-fn dirname [path_]{
+fn dirname {|path_|
     path:dir $path_
 }
 
-fn escape [path_ &unix=$false &input=$false &invert=$false]{
-    fn -order [a b]{
+fn escape {|path_ &unix=$false &input=$false &invert=$false|
+    fn -order {|a b|
         if $invert {
             put $b $a
         } else {
@@ -101,11 +101,11 @@ fn escape [path_ &unix=$false &input=$false &invert=$false]{
     }
 }
 
-fn escape-input [path_]{
+fn escape-input {|path_|
     escape &input=$true $path_
 }
 
-fn escape-unixlike [path_]{
+fn escape-unixlike {|path_|
     escape &unix=$true $path_
 }
 
@@ -117,23 +117,23 @@ fn home {
     }
 }
 
-fn join [@objects]{
+fn join {|@objects|
     put (path:clean (str:join $DELIMITER $objects))
 }
 
-fn unescape [path_]{
+fn unescape {|path_|
     escape &invert=$true $path_
 }
 
-fn unescape-input [path_]{
+fn unescape-input {|path_|
     escape &invert=$true &input=$true $path_
 }
 
-fn unescape-unixlike [path_]{
+fn unescape-unixlike {|path_|
     escape &invert=$true &unix=$true $path_
 }
 
-fn scandir [dir]{
+fn scandir {|dir|
     # Remove path escapes, see comment below
     set dir = (unescape-input $dir)
 
@@ -150,7 +150,7 @@ fn scandir [dir]{
     set dir = (escape-input $dir)
 
     # find returns an empty string for matches that have been filtered out.
-    fn -non-empty [@s]{
+    fn -non-empty {|@s|
         for i $s {
             if (!=s '' $i) {
                 put $i
@@ -189,7 +189,7 @@ fn scandir [dir]{
 }
 
 # NOTE: this is not performant
-fn walk [dir]{
+fn walk {|dir|
     var dirSearch = [ $dir ]
     while (> (count $dirSearch) 0) {
         for s $dirSearch {

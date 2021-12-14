@@ -44,7 +44,7 @@ var RESERVED-NAMES = [
     'PRN'
 ]
 
-fn reserved [path]{
+fn reserved {|path|
     var b = (path:basename $path)
     for i $RESERVED-NAMES {
         if (==s $i (str:to-upper $b)) {
