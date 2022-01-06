@@ -40,7 +40,7 @@ fn copy {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Copy-Item' ^
-            '-Path' (path:escape-input $source) ^
+            '-Path' (path:escape-input (path:absolute $source)) ^
             '-Destination' (path:escape $target)
     } else {
         wrap:cmd 'cp' '-v' $source $target
@@ -56,7 +56,7 @@ fn link {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'HardLink' ^
-            '-Value' (path:escape-input $source) ^
+            '-Value' (path:escape-input (path:absolute $source)) ^
             '-Path' (path:escape $target)
     } else {
         wrap:cmd 'ln' '-v' $source $target
@@ -68,7 +68,7 @@ fn makedir {|dir|
         windows:reserved $dir
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input $dir)
+            '-Path' (path:escape-input (path:absolute $dir))
     } else {
         wrap:cmd 'mkdir' '-v' $dir
     }
@@ -78,7 +78,7 @@ fn makedirs {|dir|
     if $platform:is-windows {
         windows:reserved $dir
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input $dir)
+            '-Path' (path:escape-input (path:absolute $dir))
     } else {
         wrap:cmd 'mkdir' '-pv' $dir
     }
@@ -88,7 +88,7 @@ fn move {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Move-Item' ^
-            '-Path' (path:escape-input $source) ^
+            '-Path' (path:escape-input (path:absolute $source)) ^
             '-Destination' (path:escape $target)
     } else {
         wrap:cmd 'mv' '-v' $source $target
@@ -111,7 +111,7 @@ fn readlink {|path|
 fn remove {|file|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
-            '-Path' (path:escape-input $file)
+            '-Path' (path:escape-input (path:absolute $file))
     } else {
         wrap:cmd 'rm' '-fv' $file
     }
@@ -120,7 +120,7 @@ fn remove {|file|
 fn removedirs {|dir|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
-            '-Path' (path:escape-input $dir)
+            '-Path' (path:escape-input (path:absolute $dir))
     } else {
         wrap:cmd 'rm' '-frv' $dir
     }
@@ -225,7 +225,7 @@ fn symlink {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
-            '-Value' (path:escape-input $source) ^
+            '-Value' (path:escape-input (path:absolute $source)) ^
             '-Path' (path:escape $target)
     } else {
         wrap:cmd 'ln' '-sv' $source $target
@@ -236,7 +236,7 @@ fn touch {|target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'file' ^
-            '-Path' (path:escape-input $target)
+            '-Path' (path:escape-input (path:absolute $target))
     } else {
         wrap:cmd 'touch' $target
     }
