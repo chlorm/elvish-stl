@@ -17,6 +17,7 @@ use path
 use str
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/platform
+use github.com/chlorm/elvish-stl/regex
 use github.com/chlorm/elvish-stl/wrap
 
 
