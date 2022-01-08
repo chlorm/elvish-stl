@@ -41,7 +41,7 @@ fn copy {|source target|
         windows:reserved $target
         wrap:ps 'Copy-Item' ^
             '-Path' (path:escape-input (path:absolute $source)) ^
-            '-Destination' (path:escape $target)
+            '-Destination' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'cp' '-v' $source $target
     }
@@ -57,7 +57,7 @@ fn link {|source target|
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'HardLink' ^
             '-Value' (path:escape-input (path:absolute $source)) ^
-            '-Path' (path:escape $target)
+            '-Path' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'ln' '-v' $source $target
     }
@@ -89,7 +89,7 @@ fn move {|source target|
         windows:reserved $target
         wrap:ps 'Move-Item' ^
             '-Path' (path:escape-input (path:absolute $source)) ^
-            '-Destination' (path:escape $target)
+            '-Destination' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'mv' '-v' $source $target
     }
@@ -226,7 +226,7 @@ fn symlink {|source target|
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
             '-Value' (path:escape-input (path:absolute $source)) ^
-            '-Path' (path:escape $target)
+            '-Path' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'ln' '-sv' $source $target
     }
