@@ -40,7 +40,7 @@ fn copy {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Copy-Item' ^
-            '-Path' (path:escape-input (path:absolute $source)) ^
+            '-LiteralPath' (path:escape (path:absolute $source)) ^
             '-Destination' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'cp' '-v' $source $target
@@ -68,7 +68,7 @@ fn makedir {|dir|
         windows:reserved $dir
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dir))
+            '-Path' (path:escape (path:absolute $dir))
     } else {
         wrap:cmd 'mkdir' '-v' $dir
     }
@@ -78,7 +78,7 @@ fn makedirs {|dir|
     if $platform:is-windows {
         windows:reserved $dir
         wrap:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dir))
+            '-Path' (path:escape (path:absolute $dir))
     } else {
         wrap:cmd 'mkdir' '-pv' $dir
     }
@@ -88,7 +88,7 @@ fn move {|source target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'Move-Item' ^
-            '-Path' (path:escape-input (path:absolute $source)) ^
+            '-LiteralPath' (path:escape (path:absolute $source)) ^
             '-Destination' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'mv' '-v' $source $target
@@ -111,7 +111,7 @@ fn readlink {|path|
 fn remove {|file|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
-            '-Path' (path:escape-input (path:absolute $file))
+            '-LiteralPath' (path:escape (path:absolute $file))
     } else {
         wrap:cmd 'rm' '-fv' $file
     }
@@ -120,7 +120,7 @@ fn remove {|file|
 fn removedirs {|dir|
     if $platform:is-windows {
         wrap:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
-            '-Path' (path:escape-input (path:absolute $dir))
+            '-LiteralPath' (path:escape (path:absolute $dir))
     } else {
         wrap:cmd 'rm' '-frv' $dir
     }
@@ -236,7 +236,7 @@ fn touch {|target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'file' ^
-            '-Path' (path:escape-input (path:absolute $target))
+            '-LiteralPath' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'touch' $target
     }
