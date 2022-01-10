@@ -65,6 +65,9 @@ fn escape {|path_ &unix=$false &input=$false &invert=$false|
             ' '  # Space
             '('
             ')'
+            '{'
+            '}'
+            ':'
             ','
             '&'
             ';'
