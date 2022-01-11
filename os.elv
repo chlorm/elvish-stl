@@ -236,7 +236,7 @@ fn touch {|target|
     if $platform:is-windows {
         windows:reserved $target
         wrap:ps 'New-Item' '-ItemType' 'file' ^
-            '-LiteralPath' (path:escape (path:absolute $target))
+            '-Path' (path:escape (path:absolute $target))
     } else {
         wrap:cmd 'touch' $target
     }
