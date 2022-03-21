@@ -31,7 +31,7 @@ fn get-value-or-nil {|envVar|
             fail
         }
         put $t
-    } except _ {
+    } catch _ {
         put $nil
     }
 }
@@ -82,7 +82,7 @@ fn bin-path {|bin|
     var path = $nil
     try {
         set path = (search-external $bin)
-    } except _ {
+    } catch _ {
         fail
     }
 

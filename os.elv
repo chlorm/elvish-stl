@@ -197,7 +197,7 @@ fn -is-type {|type path|
         if (!=s $type (stat $path 2>&-)[filetype]) {
             fail
         }
-    } except _ {
+    } catch _ {
         set i = $false
     }
     put $i
@@ -215,7 +215,7 @@ fn exists {|path|
     try {
         var _ = (> (count (stat $path)) 0)
         put $true
-    } except _ {
+    } catch _ {
         put $false
     }
 }

@@ -145,7 +145,7 @@ fn scandir {|dir|
     var p = $pwd
     try {
         cd $dir
-    } except _ {
+    } catch _ {
         fail 'directory does not exist: '$dir
     }
     cd $p

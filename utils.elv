@@ -26,14 +26,14 @@ fn get-preferred-cmd {|envVar cmds|
 
     try {
         var cmds = [ (str:split ',' (get-env $envVar)) ]
-    } except _ { }
+    } catch _ { }
 
     var cmd = $nil
     for i $cmds {
         var path = $nil
         try {
             set path = (env:bin-path $i)
-        } except _ {
+        } catch _ {
             continue
         }
         set cmd = $path
@@ -55,7 +55,7 @@ fn test-writeable {|dir|
         }
         os:touch $file
         os:remove $file
-    } except _ {
+    } catch _ {
         fail $dir' is not writeable'
     }
 }

@@ -75,13 +75,13 @@ fn -name-linux {
             $@distroStrings
             (wrap:cmd-out 'lsb_release' '-a')
         ]
-    } except _ { }
+    } catch _ { }
     try {
         set distroStrings = [
             $@distroStrings
             (wrap:cmd-out 'uname' '-a')
         ]
-    } except _ { }
+    } catch _ { }
 
     var distros = [
         'arch'
