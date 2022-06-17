@@ -123,7 +123,7 @@ fn home {
 }
 
 fn join {|@objects|
-    put (path:clean (str:join $DELIMITER $objects))
+    clean (str:join $DELIMITER $objects)
 }
 
 fn unescape {|path_|
@@ -202,7 +202,7 @@ fn walk {|dir|
             set dirSearch = (list:drop $dirSearch $s)
 
             var o = (scandir $s)
-            var root = (path:clean $o['root'])
+            var root = (clean $o['root'])
 
             put [
                 &root=$root
