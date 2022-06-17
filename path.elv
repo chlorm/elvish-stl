@@ -144,9 +144,6 @@ fn unescape-unixlike {|path_|
 }
 
 fn scandir {|dir|
-    # Remove path escapes, see comment below
-    set dir = (unescape-input $dir)
-
     var p = $pwd
     try {
         cd $dir
@@ -155,41 +152,30 @@ fn scandir {|dir|
     }
     cd $p
 
-    # This must come after cd because elvish's internal cd escapes paths
-    # automatically.
-    set dir = (escape-input $dir)
+    # Elvish only supports globbing unix-like delimited paths.
+    set dir = (dos2unix $dir)
 
-    # find returns an empty string for matches that have been filtered out.
-    fn -non-empty {|@s|
-        for i $s {
-            if (!=s '' $i) {
-                put $i
-            }
-        }
-    }
+    # Append path delimiter to prevent globbing partial directories.
+    set dir = $dir'/'
 
-    var findFiles = [ ]
-    if $platform:is-windows {
-        set findFiles = [(
-            wrap:ps-out 'Get-ChildItem' '-Path' $dir '-File' '-Name'
-        )]
-    } else {
-        set findFiles = [(
-            wrap:cmd-out 'find' $dir '-maxdepth' 1 '-not' '-type' 'd' '-printf' '%P\n'
-        )]
+    var findFiles = [ (put $dir*[nomatch-ok][match-hidden][type:regular]) ]
+    var files = []
+    for i $findFiles {
+        # Remove root path
+        set i = (re:replace '^'$dir '' $i)
+        # Convert path to native delimiters
+        set i = (clean $i)
+        set files = [ $@files $i ]
     }
-    var files = [ (-non-empty $@findFiles) ]
-    var findDirs = [ ]
-    if $platform:is-windows {
-        set findDirs = [(
-            wrap:ps-out 'Get-ChildItem' '-Path' $dir '-Directory' '-Name'
-        )]
-    } else {
-        set findDirs = [(
-            wrap:cmd-out 'find' $dir '-maxdepth' 1 '-type' 'd' '-printf' '%P\n'
-        )]
+    var findDirs = [ (put $dir*[nomatch-ok][match-hidden][type:dir]) ]
+    var dirs = []
+    for i $findDirs {
+        # Remove root path
+        set i = (re:replace '^'$dir '' $i)
+        # Convert path to native delimiters
+        set i = (clean $i)
+        set dirs = [ $@dirs $i ]
     }
-    var dirs = [ (-non-empty $@findDirs) ]
 
     put [
         &root=$dir
@@ -198,7 +184,6 @@ fn scandir {|dir|
     ]
 }
 
-# NOTE: this is not performant
 fn walk {|dir|
     var dirSearch = [ $dir ]
     while (> (count $dirSearch) 0) {
