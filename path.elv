@@ -14,6 +14,7 @@
 
 
 use path
+use re
 use str
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/platform
@@ -40,6 +41,10 @@ fn clean {|path_|
 
 fn dirname {|path_|
     path:dir $path_
+}
+
+fn dos2unix {|path|
+    re:replace '[\\]' '/' $path
 }
 
 fn escape {|path_ &unix=$false &input=$false &invert=$false|
