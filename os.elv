@@ -15,10 +15,10 @@
 
 use path path_
 use str
+use github.com/chlorm/elvish-stl/exec
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/windows
-use github.com/chlorm/elvish-stl/wrap
 
 
 var NULL = '/dev/null'
@@ -28,38 +28,38 @@ if $platform:is-windows {
 
 # FIXME: windows port
 fn chmod {|perm target|
-    wrap:cmd 'chmod' '-v' $perm $target
+    exec:cmd 'chmod' '-v' $perm $target
 }
 
 # FIXME: windows port
 fn chown {|user-group target|
-    wrap:cmd 'chown' '-v' $user-group $target
+    exec:cmd 'chown' '-v' $user-group $target
 }
 
 fn copy {|source target|
     if $platform:is-windows {
         windows:reserved $target
-        wrap:ps 'Copy-Item' ^
+        exec:ps 'Copy-Item' ^
             '-LiteralPath' (path:escape (path:absolute $source)) ^
             '-Destination' (path:escape (path:absolute $target))
     } else {
-        wrap:cmd 'cp' '-v' $source $target
+        exec:cmd 'cp' '-v' $source $target
     }
 }
 
 # FIXME: windows port
 fn gid {
-    wrap:cmd-out 'id' '-g'
+    exec:cmd-out 'id' '-g'
 }
 
 fn link {|source target|
     if $platform:is-windows {
         windows:reserved $target
-        wrap:ps 'New-Item' '-ItemType' 'HardLink' ^
+        exec:ps 'New-Item' '-ItemType' 'HardLink' ^
             '-Value' (path:escape-input (path:absolute $source)) ^
             '-Path' (path:escape (path:absolute $target))
     } else {
-        wrap:cmd 'ln' '-v' $source $target
+        exec:cmd 'ln' '-v' $source $target
     }
 }
 
@@ -67,31 +67,31 @@ fn makedir {|dir|
     if $platform:is-windows {
         windows:reserved $dir
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
-        wrap:ps 'New-Item' '-ItemType' 'directory' ^
+        exec:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input (path:absolute $dir))
     } else {
-        wrap:cmd 'mkdir' '-v' $dir
+        exec:cmd 'mkdir' '-v' $dir
     }
 }
 
 fn makedirs {|dir|
     if $platform:is-windows {
         windows:reserved $dir
-        wrap:ps 'New-Item' '-ItemType' 'directory' ^
+        exec:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input (path:absolute $dir))
     } else {
-        wrap:cmd 'mkdir' '-pv' $dir
+        exec:cmd 'mkdir' '-pv' $dir
     }
 }
 
 fn move {|source target|
     if $platform:is-windows {
         windows:reserved $target
-        wrap:ps 'Move-Item' ^
+        exec:ps 'Move-Item' ^
             '-LiteralPath' (path:escape (path:absolute $source)) ^
             '-Destination' (path:escape (path:absolute $target))
     } else {
-        wrap:cmd 'mv' '-v' $source $target
+        exec:cmd 'mv' '-v' $source $target
     }
 }
 
@@ -110,19 +110,19 @@ fn readlink {|path|
 
 fn remove {|file|
     if $platform:is-windows {
-        wrap:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
+        exec:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
             '-LiteralPath' (path:escape (path:absolute $file))
     } else {
-        wrap:cmd 'rm' '-fv' $file
+        exec:cmd 'rm' '-fv' $file
     }
 }
 
 fn removedirs {|dir|
     if $platform:is-windows {
-        wrap:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
+        exec:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
             '-LiteralPath' (path:escape (path:absolute $dir))
     } else {
-        wrap:cmd 'rm' '-frv' $dir
+        exec:cmd 'rm' '-frv' $dir
     }
 }
 
@@ -171,7 +171,7 @@ fn stat {|path &fs=$false|
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    var s = [ (str:split ',' (wrap:cmd-out 'stat' $@cmdArgs $path)) ]
+    var s = [ (str:split ',' (exec:cmd-out 'stat' $@cmdArgs $path)) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
@@ -224,41 +224,41 @@ fn exists {|path|
 fn symlink {|source target|
     if $platform:is-windows {
         windows:reserved $target
-        wrap:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
+        exec:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
             '-Value' (path:escape-input (path:absolute $source)) ^
             '-Path' (path:escape (path:absolute $target))
     } else {
-        wrap:cmd 'ln' '-sv' $source $target
+        exec:cmd 'ln' '-sv' $source $target
     }
 }
 
 fn touch {|target|
     if $platform:is-windows {
         windows:reserved $target
-        wrap:ps 'New-Item' '-ItemType' 'file' ^
+        exec:ps 'New-Item' '-ItemType' 'file' ^
             '-Path' (path:escape-input (path:absolute $target))
     } else {
-        wrap:cmd 'touch' $target
+        exec:cmd 'touch' $target
     }
 }
 
 # FIXME: windows port
 fn uid {
-    wrap:cmd-out 'id' '-u'
+    exec:cmd-out 'id' '-u'
 }
 
 fn unlink {|link|
     if $platform:is-windows {
         remove $link
     } else {
-        wrap:cmd 'unlink' $link
+        exec:cmd 'unlink' $link
     }
 }
 
 fn user {
     if $platform:is-windows {
-        wrap:ps-out '$env:UserName'
+        exec:ps-out '$env:UserName'
     } else {
-        wrap:cmd-out 'id' '-un'
+        exec:cmd-out 'id' '-un'
     }
 }

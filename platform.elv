@@ -15,7 +15,7 @@
 
 use platform
 use str
-use github.com/chlorm/elvish-stl/wrap
+use github.com/chlorm/elvish-stl/exec
 
 
 var arch = $platform:arch
@@ -73,13 +73,13 @@ fn -name-linux {
     try {
         set distroStrings = [
             $@distroStrings
-            (wrap:cmd-out 'lsb_release' '-a')
+            (exec:cmd-out 'lsb_release' '-a')
         ]
     } catch _ { }
     try {
         set distroStrings = [
             $@distroStrings
-            (wrap:cmd-out 'uname' '-a')
+            (exec:cmd-out 'uname' '-a')
         ]
     } catch _ { }
 
