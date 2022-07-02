@@ -34,7 +34,7 @@ fn cmd {|cmd @args &output=$false|
         file:close $stdout[w]
         file:close $stderr[r]
         if $output {
-            put (str:split "\n" (re:replace "\n$" '' (slurp < $stdout)))
+            str:split "\n" (re:replace "\n$" '' (slurp < $stdout))
         }
         # TODO: log output, allows using verboase output of commands
         file:close $stdout[r]
@@ -65,7 +65,7 @@ fn cmd-stdouterr {|cmd @args &output=$false|
             if $platform:is-windows {
                 set s = "\r"$s
             }
-            put (str:split $s (re:replace $s"$" '' (slurp < $stdout)))
+            str:split $s (re:replace $s"$" '' (slurp < $stdout))
         }
         file:close $stdout[r]
     } catch exception {

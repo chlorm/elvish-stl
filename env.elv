@@ -52,7 +52,7 @@ fn has-elem {|envVar elem &delimiter=':'|
     }
 
     -delimiter-valid $delimiter
-    put (list:contains [ (str:split $delimiter $envVarVal) ] $elem)
+    list:contains [ (str:split $delimiter $envVarVal) ] $elem
 }
 
 # Generic append/prepend

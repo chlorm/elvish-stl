@@ -120,7 +120,7 @@ fn escape-unixlike {|path_|
 
 fn home {
     if $platform:is-windows {
-        put (str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ])
+        str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ]
     } else {
         get-env 'HOME'
     }
