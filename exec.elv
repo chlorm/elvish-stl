@@ -13,12 +13,10 @@
 # limitations under the License.
 
 
-# TODO: Rename module to exec
-
-
 use file
 use re
 use str
+use github.com/chlorm/elvish-stl/io
 use github.com/chlorm/elvish-stl/platform
 
 
@@ -34,7 +32,7 @@ fn cmd {|cmd @args &output=$false|
         file:close $stdout[w]
         file:close $stderr[r]
         if $output {
-            str:split "\n" (re:replace "\n$" '' (slurp < $stdout))
+            str:split "\n" (re:replace "\n$" '' (io:open $stdout))
         }
         # TODO: log output, allows using verboase output of commands
         file:close $stdout[r]
@@ -42,7 +40,7 @@ fn cmd {|cmd @args &output=$false|
         file:close $stdout[w]
         file:close $stdout[r]
         file:close $stderr[w]
-        var error = (slurp < $stderr)
+        var error = (io:open $stderr)
         file:close $stderr[r]
         var errorMessage = (to-string $exception['reason'])"\n\n"$error
         fail $errorMessage
@@ -66,12 +64,12 @@ fn cmd-stdouterr {|cmd @args &output=$false|
             if $platform:is-windows {
                 set s = "\r"$s
             }
-            str:split $s (re:replace $s"$" '' (slurp < $stdout))
+            str:split $s (re:replace $s"$" '' (io:open $stdout))
         }
         file:close $stdout[r]
     } catch exception {
         file:close $stdout[w]
-        var error = (slurp < $stdout)
+        var error = (io:open $stdout)
         file:close $stdout[r]
         var errorMessage = (to-string $exception['reason'])"\n\n"$error
         fail $errorMessage
