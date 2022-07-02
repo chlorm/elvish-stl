@@ -48,7 +48,8 @@ fn reserved {|path|
     var b = (path:basename $path)
     for i $RESERVED-NAMES {
         if (==s $i (str:to-upper $b)) {
-            fail 'Windows reserved name: '$i
+            var err = 'Windows reserved name: '$i
+            fail $err
         }
     }
 }

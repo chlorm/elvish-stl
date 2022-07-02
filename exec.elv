@@ -44,7 +44,8 @@ fn cmd {|cmd @args &output=$false|
         file:close $stderr[w]
         var error = (slurp < $stderr)
         file:close $stderr[r]
-        fail (to-string $exception['reason'])"\n\n"$error
+        var errorMessage = (to-string $exception['reason'])"\n\n"$error
+        fail $errorMessage
     }
 }
 
@@ -72,7 +73,8 @@ fn cmd-stdouterr {|cmd @args &output=$false|
         file:close $stdout[w]
         var error = (slurp < $stdout)
         file:close $stdout[r]
-        fail (to-string $exception['reason'])"\n\n"$error
+        var errorMessage = (to-string $exception['reason'])"\n\n"$error
+        fail $errorMessage
     }
 }
 

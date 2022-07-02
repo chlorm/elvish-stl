@@ -41,7 +41,8 @@ fn get-preferred-cmd {|envVar cmds|
     }
 
     if (eq $cmd $nil) {
-        fail 'No command found in '$orig', install one or set '$envVar
+        var err = 'No command found in '$orig', install one or set '$envVar
+        fail $err
     }
 
     put $cmd
@@ -56,6 +57,7 @@ fn test-writeable {|dir|
         os:touch $file
         os:remove $file
     } catch _ {
-        fail $dir' is not writeable'
+        var err = $dir' is not writeable'
+        fail $err
     }
 }
