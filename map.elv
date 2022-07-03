@@ -24,12 +24,3 @@ fn contains {|map value|
     put $hasValue
 }
 
-fn drop {|map key|
-    var newMap = [&]
-    for i [ (keys $map) ] {
-        if (!=s $key $i) {
-            set newMap[$i] = $map[$i]
-        }
-    }
-    put $newMap
-}
