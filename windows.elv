@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-use str
 use github.com/chlorm/elvish-stl/exec
 use github.com/chlorm/elvish-stl/path
+use github.com/chlorm/elvish-stl/str
 
 
 # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions

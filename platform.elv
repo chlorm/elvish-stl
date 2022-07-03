@@ -14,8 +14,8 @@
 
 
 use platform
-use str
 use github.com/chlorm/elvish-stl/exec
+use github.com/chlorm/elvish-stl/str
 
 
 var arch = $platform:arch
@@ -99,7 +99,7 @@ fn -name-linux {
     ]
     for distro $distros {
         for distroString $distroStrings {
-            if (str:contains (str:to-lower $distroString) $distro) {
+            if (str:has (str:to-lower $distroString) $distro) {
                 put $distro
                 return
             }

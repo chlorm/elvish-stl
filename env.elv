@@ -14,10 +14,10 @@
 
 
 use re
-use str
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
+use github.com/chlorm/elvish-stl/str
 
 
 fn get-value-or-nil {|envVar|

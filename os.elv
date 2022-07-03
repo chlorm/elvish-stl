@@ -14,11 +14,11 @@
 
 
 use path path_
-use str
 use github.com/chlorm/elvish-stl/exec
 use github.com/chlorm/elvish-stl/map
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
+use github.com/chlorm/elvish-stl/str
 use github.com/chlorm/elvish-stl/windows
 
 

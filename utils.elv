@@ -13,11 +13,11 @@
 # limitations under the License.
 
 
-use str
 use github.com/chlorm/elvish-stl/env
 use github.com/chlorm/elvish-stl/os
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/re
+use github.com/chlorm/elvish-stl/str
 
 
 # env-var is a comma separated environment variable of preferred commands.

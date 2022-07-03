@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Cody Opel <cwopel@chlorm.net>
+# Copyright (c) 2022, Cody Opel <cwopel@chlorm.net>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,31 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/str
+use str
 
 
-fn open {|file|
-    slurp < $file
+fn has {|searchIn searchFor|
+    str:contains $searchIn $searchFor
 }
 
-fn cat {|file|
-    str:split "\n" (open $file)
+fn has-suffix {||}
+
+fn join {|joinWithStr listOfStrs|
+    str:join $joinWithStr $listOfStrs
+}
+
+fn replace {|strToMatch strToSub string|
+    str:replace $strToMatch strToSub $string
+}
+
+fn split {|splitOnStr listOfStrs|
+    str:split $splitOnStr $listOfStrs
+}
+
+fn to-lower {|string|
+    str:to-lower $string
+}
+
+fn to-upper {|string|
+    str:to-upper $string
 }
