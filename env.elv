@@ -23,7 +23,7 @@ use github.com/chlorm/elvish-stl/utils
 fn get-value-or-nil {|envVar|
     try {
         var t = (get-env $envVar)
-        if (utils:is-nil $val) {
+        if (utils:is-nil $t) {
             fail
         }
         put $t
