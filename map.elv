@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-fn contains {|map value|
+fn has-value {|map value|
     has-value $map $value
 }
 
