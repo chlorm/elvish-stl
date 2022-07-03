@@ -96,15 +96,6 @@ fn move {|source target|
     }
 }
 
-# Returns dos or unix
-fn ostype {
-    if (==s $path:DELIMITER '\') {
-        put 'dos'
-    } else {
-        put 'unix'
-    }
-}
-
 fn readlink {|path|
     path:absolute (path_:eval-symlinks $path)
 }
