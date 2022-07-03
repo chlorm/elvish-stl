@@ -20,10 +20,6 @@ use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
 
 
-fn exists {|envVar|
-    bool ?(var _ = (get-env $envVar))
-}
-
 fn get-value-or-nil {|envVar|
     try {
         var t = (get-env $envVar)
@@ -34,6 +30,10 @@ fn get-value-or-nil {|envVar|
     } catch _ {
         put $nil
     }
+}
+
+fn has {|envVar|
+    bool ?(var _ = (get-env $envVar))
 }
 
 fn -delimiter-valid {|delimiter|
