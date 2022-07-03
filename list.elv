@@ -14,14 +14,7 @@
 
 
 fn contains {|list value|
-    var hasValue = $false
-    for i $list {
-        if (eq $i $value) {
-            set hasValue = $true
-            break
-        }
-    }
-    put $hasValue
+    has-value $list $value
 }
 
 fn drop {|list elem|
