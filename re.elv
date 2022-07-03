@@ -33,7 +33,7 @@ fn is-empty {|string|
 }
 
 fn match {|pattern string|
-    re:match $patter $string
+    re:match $pattern $string
 }
 
 fn replace {|pattern replacePatternWith string|
