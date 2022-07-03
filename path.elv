@@ -14,11 +14,11 @@
 
 
 use path
-use str
 use github.com/chlorm/elvish-stl/env
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/re
+use github.com/chlorm/elvish-stl/str
 
 
 var DELIMITER = '/'
