@@ -16,6 +16,7 @@
 use path path_
 use str
 use github.com/chlorm/elvish-stl/exec
+use github.com/chlorm/elvish-stl/map
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/windows
@@ -159,7 +160,7 @@ fn stat {|path &fs=$false|
 
     # Build format string
     var tmp = [ ]
-    for i [ (keys $def) ] {
+    for i [ (map:keys $def) ] {
         set tmp = [ $@tmp $def[$i] ]
     }
     var fmt = (str:join "," $tmp)
@@ -179,7 +180,7 @@ fn stat {|path &fs=$false|
 
     var stat = [&]
     var iter = 0
-    for i [ (keys $def) ] {
+    for i [ (map:keys $def) ] {
         set stat[$i] = $s[$iter]
         set iter = (+ $iter 1)
     }
