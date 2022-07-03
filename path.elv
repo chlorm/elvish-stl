@@ -15,6 +15,7 @@
 
 use path
 use str
+use github.com/chlorm/elvish-stl/env
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/re
@@ -119,9 +120,9 @@ fn escape-unixlike {|path_|
 
 fn home {
     if $platform:is-windows {
-        str:join '' [ (get-env 'HOMEDRIVE'; get-env 'HOMEPATH') ]
+        str:join '' [ (env:get 'HOMEDRIVE') (env:get 'HOMEPATH') ]
     } else {
-        get-env 'HOME'
+        env:get 'HOME'
     }
 }
 

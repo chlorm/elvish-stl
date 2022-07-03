@@ -36,6 +36,14 @@ fn has {|envVar|
     bool ?(var _ = (get-env $envVar))
 }
 
+fn set {|envVar value|
+    set-env $envVar $value
+}
+
+fn unset {|envVar|
+    unset-env $envVar
+}
+
 fn -delimiter-valid {|delimiter|
     if (==s $delimiter '') {
         fail 'Cannot delimit path by empty string'

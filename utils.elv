@@ -26,7 +26,7 @@ fn get-preferred-cmd {|envVar cmds|
     var orig = (to-string $cmds)
 
     try {
-        var cmds = [ (str:split ',' (get-env $envVar)) ]
+        var cmds = [ (str:split ',' (env:get $envVar)) ]
     } catch _ { }
 
     var cmd = $nil
