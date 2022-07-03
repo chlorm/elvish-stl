@@ -78,7 +78,7 @@ fn escape {|path_ &unix=$false &input=$false &invert=$false|
         ]
         var unicodeQuoteFinalPunctuationChars = [ (re:find '\p{Pf}' $path_) ]
         for i $unicodeQuoteFinalPunctuationChars {
-            if (not (has-value $single $i)) {
+            if (not (list:has $single $i)) {
                 set single = [ $@single $i ]
             }
         }

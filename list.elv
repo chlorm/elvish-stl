@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-fn contains {|list value|
+fn has {|list value|
     has-value $list $value
 }
 
