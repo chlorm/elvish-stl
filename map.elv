@@ -13,7 +13,14 @@
 # limitations under the License.
 
 
+fn has-key {|map key|
+    has-key $map $key
+}
+
 fn has-value {|map value|
     has-value $map $value
 }
 
+fn keys {|list|
+    keys $list
+}
