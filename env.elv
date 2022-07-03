@@ -20,6 +20,10 @@ use github.com/chlorm/elvish-stl/str
 use github.com/chlorm/elvish-stl/utils
 
 
+fn get {|envVar|
+    get-env $envVar
+}
+
 fn get-value-or-nil {|envVar|
     try {
         var t = (get-env $envVar)
