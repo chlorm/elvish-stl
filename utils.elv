@@ -17,6 +17,7 @@ use str
 use github.com/chlorm/elvish-stl/env
 use github.com/chlorm/elvish-stl/os
 use github.com/chlorm/elvish-stl/path
+use github.com/chlorm/elvish-stl/re
 
 
 # env-var is a comma separated environment variable of preferred commands.

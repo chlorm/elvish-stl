@@ -14,11 +14,10 @@
 
 
 use path
-use re
 use str
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/platform
-use github.com/chlorm/elvish-stl/regex
+use github.com/chlorm/elvish-stl/re
 
 
 var DELIMITER = '/'
@@ -77,7 +76,7 @@ fn escape {|path_ &unix=$false &input=$false &invert=$false|
             ';'
             '$'
         ]
-        var unicodeQuoteFinalPunctuationChars = [ (regex:find '\p{Pf}' $path_) ]
+        var unicodeQuoteFinalPunctuationChars = [ (re:find '\p{Pf}' $path_) ]
         for i $unicodeQuoteFinalPunctuationChars {
             if (not (has-value $single $i)) {
                 set single = [ $@single $i ]

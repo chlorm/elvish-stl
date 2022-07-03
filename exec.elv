@@ -14,10 +14,10 @@
 
 
 use file
-use re
 use str
 use github.com/chlorm/elvish-stl/io
 use github.com/chlorm/elvish-stl/platform
+use github.com/chlorm/elvish-stl/re
 
 
 # Captures and returns command errors while suppressing output on success.

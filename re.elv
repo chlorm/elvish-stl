@@ -31,3 +31,11 @@ fn find {|regex string|
 fn is-empty {|string|
     re:match '^([\s]+)?$' $string
 }
+
+fn match {|pattern string|
+    re:match $patter $string
+}
+
+fn replace {|pattern replacePatternWith string|
+    re:replace $pattern $replacePatternWith $string
+}
