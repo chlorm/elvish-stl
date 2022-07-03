@@ -20,7 +20,13 @@ fn has {|searchIn searchFor|
     str:contains $searchIn $searchFor
 }
 
-fn has-suffix {||}
+fn has-prefix {|string prefix|
+    str:has-prefix $string $prefix
+}
+
+fn has-suffix {|string suffix|
+    str:has-suffix $string $suffix
+}
 
 fn join {|joinWithStr listOfStrs|
     str:join $joinWithStr $listOfStrs
