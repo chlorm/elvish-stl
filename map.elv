@@ -13,14 +13,17 @@
 # limitations under the License.
 
 
+use builtin
+
+
 fn has-key {|map key|
-    has-key $map $key
+    builtin:has-key $map $key
 }
 
 fn has-value {|map value|
-    has-value $map $value
+    builtin:has-value $map $value
 }
 
-fn keys {|list|
-    keys $list
+fn keys {|map|
+    builtin:keys $map
 }
