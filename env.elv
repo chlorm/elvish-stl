@@ -13,17 +13,17 @@
 # limitations under the License.
 
 
-use re
 use github.com/chlorm/elvish-stl/list
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/platform
 use github.com/chlorm/elvish-stl/str
+use github.com/chlorm/elvish-stl/utils
 
 
 fn get-value-or-nil {|envVar|
     try {
         var t = (get-env $envVar)
-        if (re:match '^([\s]+)?$' $t) {
+        if (utils:is-nil $val) {
             fail
         }
         put $t

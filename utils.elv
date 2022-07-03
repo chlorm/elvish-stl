@@ -49,6 +49,14 @@ fn get-preferred-cmd {|envVar cmds|
     put $cmd
 }
 
+fn is-nil {|val|
+    if (eq $val $nil) {
+        put $true
+        return
+    }
+    re:is-empty $val
+}
+
 fn test-writeable {|dir|
     try {
         var file = (path:join $dir 'test-write-file')
