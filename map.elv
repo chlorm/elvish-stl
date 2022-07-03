@@ -14,13 +14,6 @@
 
 
 fn contains {|map value|
-    var hasValue = $false
-    for i [ (keys $map) ] {
-        if (eq $map[$i] $value) {
-            set hasValue = $true
-            break
-        }
-    }
-    put $hasValue
+    has-value $map $value
 }
 
