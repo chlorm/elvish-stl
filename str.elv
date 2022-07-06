@@ -33,7 +33,7 @@ fn join {|joinWithStr listOfStrs|
 }
 
 fn replace {|strToMatch strToSub string|
-    str:replace $strToMatch strToSub $string
+    str:replace $strToMatch $strToSub $string
 }
 
 fn split {|splitOnStr listOfStrs|
