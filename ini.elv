@@ -21,15 +21,17 @@ use github.com/chlorm/elvish-stl/str
 # Converts an ini file into a map.
 fn read {|file|
     var i = (io:open $file)
+    var sectionNameRegex = "(\\[.*\\])"$str:LINE-DELIMITER
+    var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$str:LINE-DELIMITER")+)"
     var sections = [(
-        re:finds "(\\[.*\\])\n((?:[a-zA-Z0-9.=-]+\n)+)" $i
+        re:finds $sectionNameRegex$sectionKvsRegex $i
     )]
 
     var o = [&]
     for section $sections {
         var sectionName = (re:find '\[(.*)\]' $section[0])
         set o[$sectionName] = [&]
-        for kv [ (str:split "\n" $section[1]) ] {
+        for kv [ (str:split $str:LINE-DELIMITER $section[1]) ] {
             if (==s $kv '') {
                 continue
             }
