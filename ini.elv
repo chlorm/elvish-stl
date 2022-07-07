@@ -40,3 +40,16 @@ fn unmarshal {|fileStr|
     }
     put $o
 }
+
+# Returns ini encoding of a map.
+fn marshal {|map|
+    var o = ""
+    for section [ (map:keys $map) ] {
+        set o = $o"["$section"]"$str:LINE-DELIMITER
+        for key [ (map:keys $map[$section]) ] {
+            set o = $o$key"="$map[$section][$key]$str:LINE-DELIMITER
+        }
+        set o = $o$str:LINE-DELIMITER
+    }
+    put $o
+}
