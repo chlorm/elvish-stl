@@ -13,18 +13,17 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/io
+use github.com/chlorm/elvish-stl/map
 use github.com/chlorm/elvish-stl/re
 use github.com/chlorm/elvish-stl/str
 
 
-# Converts an ini file into a map.
-fn read {|file|
-    var i = (io:open $file)
+# Parses ini encoded data and returns a map.
+fn unmarshal {|fileStr|
     var sectionNameRegex = "(\\[.*\\])"$str:LINE-DELIMITER
     var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$str:LINE-DELIMITER")+)"
     var sections = [(
-        re:finds $sectionNameRegex$sectionKvsRegex $i
+        re:finds $sectionNameRegex$sectionKvsRegex $fileStr
     )]
 
     var o = [&]
