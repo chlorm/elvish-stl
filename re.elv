@@ -18,13 +18,28 @@ use re
 
 # Returns the match string from an re:find object
 fn -find-obj {|obj|
-    put $obj['groups'][-1..][0]['text']
+    put $obj['groups'][1..][0]['text']
+}
+
+fn -find-objs {|obj|
+    var l = [ ]
+    for i $obj['groups'][1..] {
+        set l = [$@l $i['text'] ]
+    }
+    put $l
 }
 
 # Returns a string instead of an object like re:find
 fn find {|regex string|
     for i [ (re:find $regex $string) ] {
         -find-obj $i
+    }
+}
+
+# Returns a list of strings corresponding to each match group.
+fn finds {|regex string|
+    for i [ (re:find $regex $string) ] {
+        -find-objs $i
     }
 }
 
