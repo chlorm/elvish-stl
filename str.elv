@@ -14,7 +14,13 @@
 
 
 use str
+use github.com/chlorm/elvish-stl/platform
 
+
+var LINE-DELIMITER = "\n"
+if $platform:is-windows {
+    set LINE-DELIMITER = "\r\n"
+}
 
 fn has {|searchIn searchFor|
     str:contains $searchIn $searchFor
