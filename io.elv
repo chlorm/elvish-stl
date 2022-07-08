@@ -20,6 +20,6 @@ fn open {|file|
     slurp < $file
 }
 
-fn cat {|file &delimiter=$str:LINE-DELIMITER|
-    str:split $delimiter (open $file)
+fn cat {|file &line-delimiter=$str:LINE-DELIMITER|
+    str:split $line-delimiter (open $file)
 }
