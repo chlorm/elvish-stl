@@ -249,7 +249,7 @@ fn unlink {|linkPath|
 
 fn user {
     if $platform:is-windows {
-        exec:ps-out '$env:UserName'
+        env:get UserName
     } else {
         exec:cmd-out 'id' '-un'
     }
