@@ -22,7 +22,7 @@ use github.com/chlorm/elvish-stl/str
 
 # Captures and returns command errors while suppressing output on success.
 # NOTE: This is intended for unix commands that have separate stdout/stderr.
-fn cmd {|cmd @args &output=$false|
+fn cmd {|cmd @args &output=$false &line-delimiter=$str:LINE-DELIMITER|
     var stdout = (file:pipe)
     var stderr = (file:pipe)
     try {
@@ -32,7 +32,10 @@ fn cmd {|cmd @args &output=$false|
         file:close $stdout[w]
         file:close $stderr[r]
         if $output {
-            str:split "\n" (re:replace "\n$" '' (io:open $stdout))
+            var f = (io:open $stdout)
+            # Remove trailing newlines
+            var s = (re:replace $line-delimiter"$" '' $f)
+            str:split $line-delimiter $s
         }
         # TODO: log output, allows using verboase output of commands
         file:close $stdout[r]
@@ -53,18 +56,17 @@ fn cmd-out {|cmd @args|
 }
 
 # Commands that return errors on stdout.
-fn cmd-stdouterr {|cmd @args &output=$false|
+fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$str:LINE-DELIMITER|
     var stdout = (file:pipe)
     try {
         var c = (external $cmd)
         $c $@args >$stdout
         file:close $stdout[w]
         if $output {
-            var s = "\n"
-            if $platform:is-windows {
-                set s = "\r"$s
-            }
-            str:split $s (re:replace $s"$" '' (io:open $stdout))
+            var f = (io:open $stdout)
+            # Remove trailing newlines
+            var s = (re:replace $line-delimiter"$" '' $f)
+            str:split $line-delimiter $s
         }
         file:close $stdout[r]
     } catch exception {
