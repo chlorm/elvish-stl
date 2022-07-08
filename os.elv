@@ -33,18 +33,18 @@ fn chmod {|perm target|
 }
 
 # FIXME: windows port
-fn chown {|user-group target|
-    exec:cmd 'chown' '-v' $user-group $target
+fn chown {|user-group path|
+    exec:cmd 'chown' '-v' $user-group $path
 }
 
-fn copy {|source target|
+fn copy {|sourcePath targetPath|
     if $platform:is-windows {
-        windows:reserved $target
+        windows:reserved $targetPath
         exec:ps 'Copy-Item' ^
-            '-LiteralPath' (path:escape (path:absolute $source)) ^
-            '-Destination' (path:escape (path:absolute $target))
+            '-LiteralPath' (path:escape (path:absolute $sourcePath)) ^
+            '-Destination' (path:escape (path:absolute $targetPath))
     } else {
-        exec:cmd 'cp' '-v' $source $target
+        exec:cmd 'cp' '-v' $sourcePath $targetPath
     }
 }
 
@@ -53,46 +53,46 @@ fn gid {
     exec:cmd-out 'id' '-g'
 }
 
-fn link {|source target|
+fn link {|sourcePath targetPath|
     if $platform:is-windows {
-        windows:reserved $target
+        windows:reserved $targetPath
         exec:ps 'New-Item' '-ItemType' 'HardLink' ^
-            '-Value' (path:escape-input (path:absolute $source)) ^
-            '-Path' (path:escape (path:absolute $target))
+            '-Value' (path:escape-input (path:absolute $sourcePath)) ^
+            '-Path' (path:escape (path:absolute $targetPath))
     } else {
-        exec:cmd 'ln' '-v' $source $target
+        exec:cmd 'ln' '-v' $sourcePath $targetPath
     }
 }
 
-fn makedir {|dir|
+fn makedir {|dirPath|
     if $platform:is-windows {
-        windows:reserved $dir
+        windows:reserved $dirPath
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
         exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dir))
+            '-Path' (path:escape-input (path:absolute $dirPath))
     } else {
-        exec:cmd 'mkdir' '-v' $dir
+        exec:cmd 'mkdir' '-v' $dirPath
     }
 }
 
-fn makedirs {|dir|
+fn makedirs {|dirPath|
     if $platform:is-windows {
-        windows:reserved $dir
+        windows:reserved $dirPath
         exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dir))
+            '-Path' (path:escape-input (path:absolute $dirPath))
     } else {
-        exec:cmd 'mkdir' '-pv' $dir
+        exec:cmd 'mkdir' '-pv' $dirPath
     }
 }
 
-fn move {|source target|
+fn move {|sourcePath targetPath|
     if $platform:is-windows {
-        windows:reserved $target
+        windows:reserved $targetPath
         exec:ps 'Move-Item' ^
-            '-LiteralPath' (path:escape (path:absolute $source)) ^
-            '-Destination' (path:escape (path:absolute $target))
+            '-LiteralPath' (path:escape (path:absolute $sourcePath)) ^
+            '-Destination' (path:escape (path:absolute $targetPath))
     } else {
-        exec:cmd 'mv' '-v' $source $target
+        exec:cmd 'mv' '-v' $sourcePath $targetPath
     }
 }
 
@@ -100,21 +100,21 @@ fn readlink {|path|
     path:absolute (path_:eval-symlinks $path)
 }
 
-fn remove {|file|
+fn remove {|filePath|
     if $platform:is-windows {
         exec:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
-            '-LiteralPath' (path:escape (path:absolute $file))
+            '-LiteralPath' (path:escape (path:absolute $filePath))
     } else {
-        exec:cmd 'rm' '-fv' $file
+        exec:cmd 'rm' '-fv' $filePath
     }
 }
 
-fn removedirs {|dir|
+fn removedirs {|dirPath|
     if $platform:is-windows {
         exec:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
-            '-LiteralPath' (path:escape (path:absolute $dir))
+            '-LiteralPath' (path:escape (path:absolute $dirPath))
     } else {
-        exec:cmd 'rm' '-frv' $dir
+        exec:cmd 'rm' '-frv' $dirPath
     }
 }
 
@@ -213,24 +213,24 @@ fn exists {|path|
 }
 
 # NOTE: Symlinks require admin permissions on Windows.
-fn symlink {|source target|
+fn symlink {|sourcePath targetPath|
     if $platform:is-windows {
-        windows:reserved $target
+        windows:reserved $targetPath
         exec:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
-            '-Value' (path:escape-input (path:absolute $source)) ^
-            '-Path' (path:escape (path:absolute $target))
+            '-Value' (path:escape-input (path:absolute $sourcePath)) ^
+            '-Path' (path:escape (path:absolute $targetPath))
     } else {
-        exec:cmd 'ln' '-sv' $source $target
+        exec:cmd 'ln' '-sv' $sourcePath $targetPath
     }
 }
 
-fn touch {|target|
+fn touch {|filePath|
     if $platform:is-windows {
-        windows:reserved $target
+        windows:reserved $filePath
         exec:ps 'New-Item' '-ItemType' 'file' ^
-            '-Path' (path:escape-input (path:absolute $target))
+            '-Path' (path:escape-input (path:absolute $filePath))
     } else {
-        exec:cmd 'touch' $target
+        exec:cmd 'touch' $filePath
     }
 }
 
@@ -239,11 +239,11 @@ fn uid {
     exec:cmd-out 'id' '-u'
 }
 
-fn unlink {|link|
+fn unlink {|linkPath|
     if $platform:is-windows {
-        remove $link
+        remove $linkPath
     } else {
-        exec:cmd 'unlink' $link
+        exec:cmd 'unlink' $linkPath
     }
 }
 
