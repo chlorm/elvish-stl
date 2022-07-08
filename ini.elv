@@ -19,9 +19,9 @@ use github.com/chlorm/elvish-stl/str
 
 
 # Parses ini encoded data and returns a map.
-fn unmarshal {|fileStr|
-    var sectionNameRegex = "(\\[.*\\])"$str:LINE-DELIMITER
-    var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$str:LINE-DELIMITER")+)"
+fn unmarshal {|fileStr &line-delimiter=$str:LINE-DELIMITER|
+    var sectionNameRegex = "(\\[.*\\])"$line-delimiter
+    var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$line-delimiter")+)"
     var sections = [(
         re:finds $sectionNameRegex$sectionKvsRegex $fileStr
     )]
@@ -30,7 +30,7 @@ fn unmarshal {|fileStr|
     for section $sections {
         var sectionName = (re:find '\[(.*)\]' $section[0])
         set o[$sectionName] = [&]
-        for kv [ (str:split $str:LINE-DELIMITER $section[1]) ] {
+        for kv [ (str:split $line-delimiter $section[1]) ] {
             if (==s $kv '') {
                 continue
             }
@@ -42,14 +42,14 @@ fn unmarshal {|fileStr|
 }
 
 # Returns ini encoding of a map.
-fn marshal {|map|
+fn marshal {|map &line-delimiter=$str:LINE-DELIMITER|
     var o = ""
     for section [ (map:keys $map) ] {
-        set o = $o"["$section"]"$str:LINE-DELIMITER
+        set o = $o"["$section"]"$line-delimiter
         for key [ (map:keys $map[$section]) ] {
-            set o = $o$key"="$map[$section][$key]$str:LINE-DELIMITER
+            set o = $o$key"="$map[$section][$key]$line-delimiter
         }
-        set o = $o$str:LINE-DELIMITER
+        set o = $o$line-delimiter
     }
     put $o
 }
