@@ -152,18 +152,18 @@ fn -scandir-glob {|dirPath &type='regular'|
     }
 }
 
-fn scandir {|dir|
+fn scandir {|dirPath|
     # Elvish only supports globbing unix-like delimited paths.
-    set dir = (dos2unix $dir)
+    set dirPath = (dos2unix $dirPath)
 
     # Append path delimiter to prevent globbing partial directory names.
-    set dir = $dir'/'
+    set dirPath = $dirPath'/'
 
-    var files = [ (-scandir-glob $dir) ]
-    var dirs = [ (-scandir-glob &type='dir' $dir) ]
+    var files = [ (-scandir-glob $dirPath) ]
+    var dirs = [ (-scandir-glob &type='dir' $dirPath) ]
 
     put [
-        &root=(clean $dir)
+        &root=(clean $dirPath)
         &dirs=$dirs
         &files=$files
     ]
