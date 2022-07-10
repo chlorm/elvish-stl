@@ -142,6 +142,16 @@ fn unescape-unixlike {|path_|
     escape &invert=$true &unix=$true $path_
 }
 
+fn -scandir-glob {|dirPath &type='regular'|
+    put $dirPath*[nomatch-ok][match-hidden][type:$type] | peach {|i|
+        # Remove root path
+        set i = (re:replace '^'$dirPath '' $i)
+        # Convert path to native delimiters
+        set i = (clean $i)
+        put $i
+    }
+}
+
 fn scandir {|dir|
     var p = $pwd
     try {
@@ -154,27 +164,11 @@ fn scandir {|dir|
     # Elvish only supports globbing unix-like delimited paths.
     set dir = (dos2unix $dir)
 
-    # Append path delimiter to prevent globbing partial directories.
+    # Append path delimiter to prevent globbing partial directory names.
     set dir = $dir'/'
 
-    var findFiles = [ (put $dir*[nomatch-ok][match-hidden][type:regular]) ]
-    var files = []
-    for i $findFiles {
-        # Remove root path
-        set i = (re:replace '^'$dir '' $i)
-        # Convert path to native delimiters
-        set i = (clean $i)
-        set files = [ $@files $i ]
-    }
-    var findDirs = [ (put $dir*[nomatch-ok][match-hidden][type:dir]) ]
-    var dirs = []
-    for i $findDirs {
-        # Remove root path
-        set i = (re:replace '^'$dir '' $i)
-        # Convert path to native delimiters
-        set i = (clean $i)
-        set dirs = [ $@dirs $i ]
-    }
+    var files = [ (-scandir-glob $dir) ]
+    var dirs = [ (-scandir-glob &type='dir' $dir) ]
 
     put [
         &root=(clean $dir)
