@@ -159,8 +159,13 @@ fn scandir {|dirPath|
     # Append path delimiter to prevent globbing partial directory names.
     set dirPath = $dirPath'/'
 
-    var files = [ (-scandir-glob $dirPath) ]
-    var dirs = [ (-scandir-glob &type='dir' $dirPath) ]
+    var files = [ ]
+    var dirs = [ ]
+    run-parallel {
+        set files = [ (-scandir-glob $dirPath) ]
+    } {
+        set dirs = [ (-scandir-glob &type='dir' $dirPath) ]
+    }
 
     put [
         &root=(clean $dirPath)
