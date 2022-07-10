@@ -153,14 +153,6 @@ fn -scandir-glob {|dirPath &type='regular'|
 }
 
 fn scandir {|dir|
-    var p = $pwd
-    try {
-        cd $dir
-    } catch _ {
-        fail 'directory does not exist: '$dir
-    }
-    cd $p
-
     # Elvish only supports globbing unix-like delimited paths.
     set dir = (dos2unix $dir)
 
