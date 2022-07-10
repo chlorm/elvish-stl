@@ -169,21 +169,11 @@ fn scandir {|dir|
     ]
 }
 
-fn walk {|dir|
-    var dirSearch = [ $dir ]
-    while (> (count $dirSearch) 0) {
-        for s $dirSearch {
-            # Update index
-            set dirSearch = (list:drop $dirSearch $s)
+fn walk {|dirPath|
+    var o = (scandir $dirPath)
+    put $o
 
-            var o = (scandir $s)
-
-            put $o
-
-            # Append new directories to index
-            for f $o[dirs] {
-                set dirSearch = [ $@dirSearch (join $o['root'] $f) ]
-            }
-        }
+    for d $o['dirs'] {
+        walk (join $o['root'] $d)
     }
 }
