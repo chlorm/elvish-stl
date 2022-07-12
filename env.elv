@@ -20,6 +20,12 @@ use github.com/chlorm/elvish-stl/str
 use github.com/chlorm/elvish-stl/utils
 
 
+var DELIMITER = ':'
+if $platform:is-windows {
+    set DELIMITER = ';'
+}
+
+
 fn get {|envVar|
     try {
         get-env $envVar
