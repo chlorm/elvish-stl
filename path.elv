@@ -126,6 +126,24 @@ fn home {
     }
 }
 
+# Walks up a path to see if any parent is hidden. (e.g. path/.hidden-file)
+fn is-hidden {|path_|
+    var hidden = $false
+    var p = $path_
+    while $true {
+        if (str:has-prefix (basename $p) '.') {
+            set hidden = $true
+            break
+        }
+        set p = (dirname $p)
+        # Root of path
+        if (==s $p '.') {
+            break
+        }
+    }
+    put $hidden
+}
+
 fn join {|@objects|
     clean (str:join $DELIMITER $objects)
 }
