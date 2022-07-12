@@ -21,7 +21,12 @@ use github.com/chlorm/elvish-stl/utils
 
 
 fn get {|envVar|
-    get-env $envVar
+    try {
+        get-env $envVar
+    } catch e {
+        var err = (to-string $e['reason'])': '$envVar
+        fail $err
+    }
 }
 
 fn get-value-or-nil {|envVar|
@@ -41,7 +46,12 @@ fn has {|envVar|
 }
 
 fn set {|envVar value|
-    set-env $envVar $value
+    try {
+        set-env $envVar $value
+    } catch e {
+        var err = (to-string $e['reason'])': '$envVar'='$value
+        fail $err
+    }
 }
 
 fn unset {|envVar|
