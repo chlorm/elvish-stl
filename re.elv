@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Cody Opel <cwopel@chlorm.net>
+# Copyright (c) 2020, 2022, Cody Opel <cwopel@chlorm.net>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ fn -find-objs {|obj|
 
 # Returns a string instead of an object like re:find
 fn find {|regex string|
-    for i [ (re:find $regex $string) ] {
+    re:find $regex $string | peach {|i|
         -find-obj $i
     }
 }
 
 # Returns a list of strings corresponding to each match group.
 fn finds {|regex string|
-    for i [ (re:find $regex $string) ] {
+    re:find $regex $string | peach {|i|
         -find-objs $i
     }
 }
