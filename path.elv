@@ -148,6 +148,38 @@ fn join {|@objects|
     clean (str:join $DELIMITER $objects)
 }
 
+# Converts an absolute path in a relative path.
+fn relative-to {|absPath relativeToAbsPath|
+    var p1 = $absPath
+    var p2 = $relativeToAbsPath
+    var p1Final = $nil
+    var p2Iter = (num 1)
+    # Recurse up p1 until p2 has-prefix p1
+    while $true {
+        if (str:has-prefix $p2 $p1) {
+            set p1Final = $p1
+            break
+        }
+        set p1 = (dirname $p1)
+    }
+    # Recurse up p2 til p2 == p1Final counting iterations
+    while $true {
+        if (==s $p1Final $p2) {
+            break
+        }
+        set p2 = (dirname $p2)
+        set p2Iter = (+ $p2Iter (num 1))
+    }
+    # Prepend ../'s of the numer of iters
+    var prepend = [ ]
+    if (> $p2Iter 1) {
+        for i [ (range 1 $p2Iter) ] {
+            set prepend = [ $@prepend '..' ]
+        }
+    }
+    join $@prepend (str:replace $p1Final$DELIMITER '' $absPath)
+}
+
 fn unescape {|path_|
     escape &invert=$true $path_
 }
