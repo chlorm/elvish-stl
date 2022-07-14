@@ -47,7 +47,7 @@ fn split {|splitOnStr str|
 }
 
 fn to-lines {|fileStr &line-delimiter=$LINE-DELIMITER|
-    for s [ (split $line-delimiter $fileStr) ]
+    for s [ (split $line-delimiter $fileStr) ] {
         if (==s $s '') {
             continue
         }
