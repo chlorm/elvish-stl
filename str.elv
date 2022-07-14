@@ -46,6 +46,15 @@ fn split {|splitOnStr listOfStrs|
     str:split $splitOnStr $listOfStrs
 }
 
+fn to-lines {|fileStr &line-delimiter=$LINE-DELIMITER|
+    for s [ (split $line-delimiter $fileStr) ]
+        if (==s $s '') {
+            continue
+        }
+        put $s
+    }
+}
+
 fn to-lower {|string|
     str:to-lower $string
 }
