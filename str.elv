@@ -42,8 +42,8 @@ fn replace {|strToMatch strToSub string|
     str:replace $strToMatch $strToSub $string
 }
 
-fn split {|splitOnStr listOfStrs|
-    str:split $splitOnStr $listOfStrs
+fn split {|splitOnStr str|
+    str:split $splitOnStr $str
 }
 
 fn to-lines {|fileStr &line-delimiter=$LINE-DELIMITER|
