@@ -193,6 +193,9 @@ fn unescape-unixlike {|path_|
 }
 
 fn -scandir-glob {|dirPath &type='regular'|
+    # Extra trailing `/`, multiple `/` cause the remove root regex to fail.
+    set dirPath = (re:replace '[\/]+$' '/' $dirPath)
+
     put $dirPath*[nomatch-ok][match-hidden][type:$type] | peach {|i|
         # Remove root path
         set i = (re:replace '^'$dirPath '' $i)
