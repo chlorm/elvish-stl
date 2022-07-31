@@ -22,7 +22,11 @@ use github.com/chlorm/elvish-stl/str
 
 # Captures and returns command errors while suppressing output on success.
 # NOTE: This is intended for unix commands that have separate stdout/stderr.
-fn cmd {|cmd @args &output=$false &line-delimiter=$str:LINE-DELIMITER|
+fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
+    if (eq $line-delimiter $nil) {
+        set line-delimiter = $str:LINE-DELIMITER
+    }
+
     var stdout = (file:pipe)
     var stderr = (file:pipe)
     try {
@@ -56,7 +60,11 @@ fn cmd-out {|cmd @args|
 }
 
 # Commands that return errors on stdout.
-fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$str:LINE-DELIMITER|
+fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
+    if (eq $line-delimiter $nil) {
+        set line-delimiter = $str:LINE-DELIMITER
+    }
+
     var stdout = (file:pipe)
     try {
         var c = (external $cmd)

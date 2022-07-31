@@ -19,7 +19,11 @@ use github.com/chlorm/elvish-stl/str
 
 
 # Parses ini encoded data and returns a map.
-fn unmarshal {|fileStr &line-delimiter=$str:LINE-DELIMITER|
+fn unmarshal {|fileStr &line-delimiter=$nil|
+    if (eq $line-delimiter $nil) {
+        set line-delimiter = $str:LINE-DELIMITER
+    }
+
     var sectionNameRegex = "(\\[.*\\])"$line-delimiter
     var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$line-delimiter")+)"
     var sections = [(
@@ -42,7 +46,11 @@ fn unmarshal {|fileStr &line-delimiter=$str:LINE-DELIMITER|
 }
 
 # Returns ini encoding of a map.
-fn marshal {|map &line-delimiter=$str:LINE-DELIMITER|
+fn marshal {|map &line-delimiter=$nil|
+    if (eq $line-delimiter $nil {
+        set line-delimiter = $str:LINE-DELIMITER
+    }
+
     var o = ""
     for section [ (map:keys $map) ] {
         set o = $o"["$section"]"$line-delimiter
