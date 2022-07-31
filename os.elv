@@ -186,7 +186,7 @@ fn statfs {|path|
 fn -is-type {|type path|
     var i = $true
     try {
-        if (!=s $type (stat $path 2>&-)[filetype]) {
+        if (!=s $type (stat $path 2>$NULL)[filetype]) {
             fail
         }
     } catch _ {
