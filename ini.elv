@@ -47,7 +47,7 @@ fn unmarshal {|fileStr &line-delimiter=$nil|
 
 # Returns ini encoding of a map.
 fn marshal {|map &line-delimiter=$nil|
-    if (eq $line-delimiter $nil {
+    if (eq $line-delimiter $nil) {
         set line-delimiter = $str:LINE-DELIMITER
     }
 
