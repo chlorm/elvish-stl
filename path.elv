@@ -125,9 +125,10 @@ fn ext {|path_|
 fn home {
     if $platform:is-windows {
         str:join '' [ (env:get 'HOMEDRIVE') (env:get 'HOMEPATH') ]
-    } else {
-        env:get 'HOME'
+        return
     }
+
+    env:get 'HOME'
 }
 
 # Walks up a path to see if any parent is hidden. (e.g. path/.hidden-file)
@@ -236,6 +237,7 @@ fn walk {|dirPath|
     put $o
 
     for d $o['dirs'] {
-        walk (join $o['root'] $d)
+        var p = (join $o['root'] $d)
+        walk $p
     }
 }

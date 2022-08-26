@@ -20,9 +20,10 @@ use github.com/chlorm/elvish-stl/platform
 fn kill {|processId|
     if $platform:is-windows {
         exec:ps 'Stop-Process' '-Id' $processId '-Confirm'
-    } else {
-        exec:cmd 'kill' $processId
+        return
     }
+
+    exec:cmd 'kill' $processId
 }
 
 fn pidsof {|processName|

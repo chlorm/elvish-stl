@@ -88,14 +88,20 @@ fn -pend-generic {|envVar path &delimiter=$nil &pre=$false|
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
         set-env $envVar $path
-    } elif (has-elem $envVar $path &delimiter=$delimiter) {
+        return
+    }
+
+    if (has-elem $envVar $path &delimiter=$delimiter) {
         # Don't pollute paths with duplicates.
         return
-    } elif $pre {
-        set-env $envVar $path$delimiter$envVarVal
-    } else {
-        set-env $envVar $envVarVal$delimiter$path
     }
+
+    if $pre {
+        set-env $envVar $path$delimiter$envVarVal
+        return
+    }
+
+    set-env $envVar $envVarVal$delimiter$path
 }
 
 fn append {|envVar path &delimiter=':'|

@@ -24,7 +24,7 @@ fn -find-obj {|obj|
 fn -find-objs {|obj|
     var l = [ ]
     for i $obj['groups'][1..] {
-        set l = [$@l $i['text'] ]
+        set l = [ $@l $i['text'] ]
     }
     put $l
 }

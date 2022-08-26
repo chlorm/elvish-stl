@@ -42,9 +42,10 @@ fn copy {|sourcePath targetPath|
         exec:ps 'Copy-Item' ^
             '-LiteralPath' (path:escape (path:absolute $sourcePath)) ^
             '-Destination' (path:escape (path:absolute $targetPath))
-    } else {
-        exec:cmd 'cp' '-v' $sourcePath $targetPath
+        return
     }
+
+    exec:cmd 'cp' '-v' $sourcePath $targetPath
 }
 
 # FIXME: windows port
@@ -58,9 +59,10 @@ fn link {|sourcePath targetPath|
         exec:ps 'New-Item' '-ItemType' 'HardLink' ^
             '-Value' (path:escape-input (path:absolute $sourcePath)) ^
             '-Path' (path:escape (path:absolute $targetPath))
-    } else {
-        exec:cmd 'ln' '-v' $sourcePath $targetPath
+        return
     }
+
+    exec:cmd 'ln' '-v' $sourcePath $targetPath
 }
 
 fn makedir {|dirPath|
@@ -69,9 +71,10 @@ fn makedir {|dirPath|
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
         exec:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input (path:absolute $dirPath))
-    } else {
-        exec:cmd 'mkdir' '-v' $dirPath
+        return
     }
+
+    exec:cmd 'mkdir' '-v' $dirPath
 }
 
 fn makedirs {|dirPath|
@@ -79,9 +82,10 @@ fn makedirs {|dirPath|
         windows:reserved $dirPath
         exec:ps 'New-Item' '-ItemType' 'directory' ^
             '-Path' (path:escape-input (path:absolute $dirPath))
-    } else {
-        exec:cmd 'mkdir' '-pv' $dirPath
+        return
     }
+
+    exec:cmd 'mkdir' '-pv' $dirPath
 }
 
 fn move {|sourcePath targetPath|
@@ -90,41 +94,55 @@ fn move {|sourcePath targetPath|
         exec:ps 'Move-Item' ^
             '-LiteralPath' (path:escape (path:absolute $sourcePath)) ^
             '-Destination' (path:escape (path:absolute $targetPath))
-    } else {
-        exec:cmd 'mv' '-v' $sourcePath $targetPath
+        return
     }
+
+    exec:cmd 'mv' '-v' $sourcePath $targetPath
 }
 
 fn readlink {|path|
     if $platform:is-windows {
         exec:ps-out 'Get-Item' $path '|' ^
             'Select-Object' '-ExpandProperty' 'Target'
-    } else {
-        exec:cmd-out 'readlink' '-f'
+        return
     }
+
+    exec:cmd-out 'readlink' '-f'
 }
 
 fn remove {|filePath|
     if $platform:is-windows {
         exec:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
             '-LiteralPath' (path:escape (path:absolute $filePath))
-    } else {
-        exec:cmd 'rm' '-fv' $filePath
+        return
     }
+
+    exec:cmd 'rm' '-fv' $filePath
 }
 
 fn removedirs {|dirPath|
     if $platform:is-windows {
         exec:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
             '-LiteralPath' (path:escape (path:absolute $dirPath))
-    } else {
-        exec:cmd 'rm' '-frv' $dirPath
+        return
     }
+
+    exec:cmd 'rm' '-frv' $dirPath
 }
 
 # FIXME: implement icacl/fsutil windows port, only permission should differ.
 fn stat {|path &fs=$false|
-    var def = [&]
+    # FIXME: birth-time and selinux-context are not portable.
+    var def = [
+        &permission-octal='%a'
+        &filetype='%F'
+        &gid='%g'
+        &size='%s'
+        &uid='%u'
+        &access-time='%x'
+        &modification-time='%y'
+        &status-change-time='%z'
+    ]
     if $fs {
         set def = [
             &blocks='%b'
@@ -138,18 +156,6 @@ fn stat {|path &fs=$false|
             &fundamental-block-size='%S'
             &type-hex='%t'
             &type='%T'
-        ]
-    } else {
-        # FIXME: birth-time and selinux-context are not portable.
-        set def = [
-            &permission-octal='%a'
-            &filetype='%F'
-            &gid='%g'
-            &size='%s'
-            &uid='%u'
-            &access-time='%x'
-            &modification-time='%y'
-            &status-change-time='%z'
         ]
     }
 
@@ -167,7 +173,8 @@ fn stat {|path &fs=$false|
     # The so called parsable(terse) output places the path (not parsable if path
     # contains a space) first and the final element (SELinux) is dynamic so
     # manually specify the format string to actually get parsable output.
-    var s = [ (str:split ',' (exec:cmd-out 'stat' $@cmdArgs $path)) ]
+    var s = (exec:cmd-out 'stat' $@cmdArgs $path)
+    set s = [ (str:split ',' $s) ]
 
     if (not (eq (count $tmp) (count $s))) {
         fail 'list length mismatch'
@@ -223,9 +230,10 @@ fn symlink {|sourcePath targetPath|
         exec:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
             '-Value' (path:escape-input (path:absolute $sourcePath)) ^
             '-Path' (path:escape (path:absolute $targetPath))
-    } else {
-        exec:cmd 'ln' '-sv' $sourcePath $targetPath
+        return
     }
+
+    exec:cmd 'ln' '-sv' $sourcePath $targetPath
 }
 
 fn touch {|filePath|
@@ -233,9 +241,10 @@ fn touch {|filePath|
         windows:reserved $filePath
         exec:ps 'New-Item' '-ItemType' 'file' ^
             '-Path' (path:escape-input (path:absolute $filePath))
-    } else {
-        exec:cmd 'touch' $filePath
+        return
     }
+
+    exec:cmd 'touch' $filePath
 }
 
 # FIXME: windows port
@@ -246,15 +255,17 @@ fn uid {
 fn unlink {|linkPath|
     if $platform:is-windows {
         remove $linkPath
-    } else {
-        exec:cmd 'unlink' $linkPath
+        return
     }
+
+    exec:cmd 'unlink' $linkPath
 }
 
 fn user {
     if $platform:is-windows {
         env:get UserName
-    } else {
-        exec:cmd-out 'id' '-un'
+        return
     }
+
+    exec:cmd-out 'id' '-un'
 }

@@ -111,9 +111,10 @@ fn name {
     if $is-linux {
         var n = (-name-linux)
         put $namesFormatted[$n]
-    } else {
-        put $namesFormatted[$os]
+        return
     }
+
+    put $namesFormatted[$os]
 }
 
 fn release {

@@ -20,7 +20,8 @@ use github.com/chlorm/elvish-stl/platform
 fn date {|&format='%Y%m%d'|
     if $platform:is-windows {
         exec:ps-out 'Get-Date' '-UFormat' $format
-    } else {
-        exec:cmd-out 'date' '+'$format
+        return
     }
+
+    exec:cmd-out 'date' '+'$format
 }
