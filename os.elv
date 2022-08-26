@@ -13,7 +13,6 @@
 # limitations under the License.
 
 
-use path path_
 use github.com/chlorm/elvish-stl/exec
 use github.com/chlorm/elvish-stl/map
 use github.com/chlorm/elvish-stl/path
@@ -97,7 +96,12 @@ fn move {|sourcePath targetPath|
 }
 
 fn readlink {|path|
-    path:absolute (path_:eval-symlinks $path)
+    if $platform:is-windows {
+        exec:ps-out 'Get-Item' $path '|' ^
+            'Select-Object' '-ExpandProperty' 'Target'
+    } else {
+        exec:cmd-out 'readlink' '-f'
+    }
 }
 
 fn remove {|filePath|
