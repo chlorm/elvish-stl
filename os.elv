@@ -107,7 +107,7 @@ fn readlink {|path|
         return
     }
 
-    exec:cmd-out 'readlink' '-f'
+    exec:cmd-out 'readlink' '-f' $path
 }
 
 fn remove {|filePath|
