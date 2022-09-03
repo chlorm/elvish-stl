@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+use builtin
 use github.com/chlorm/elvish-stl/path
 use github.com/chlorm/elvish-stl/str
 
@@ -34,56 +35,61 @@ fn run {
 
     if (> $failures 0) {
         if (== $failures 1) {
-            fail '1 test failed'
+            builtin:fail '1 test failed'
         }
-        fail $failures' tests failed'
+        builtin:fail $failures' tests failed'
     }
 }
 
-fn assert {|assertion~ &def=$nil|
+fn pass {|closure~|
+    printf 'pass: %s' $closure~['def']
     try {
-        if (eq $def $nil) {
-            set def = $assertion~['def']
-        }
-        printf 'assert: %s' $def
-        $assertion~
+        $closure~
     } catch e {
         printf ", %s\n" (styled 'failed' red)
-        fail $e
+        builtin:fail $e
     }
     printf ", %s\n" (styled 'passed' green)
 }
 
-fn refute {|assertion~ &def=$nil|
+fn fail {|closure~|
+    printf 'fail: %s' $closure~['def']
     try {
-        if (eq $def $nil) {
-            set def = $assertion~['def']
-        }
-        printf 'refute: %s' $def
-        var r = (assert $assertion~)
+        var r = (assert $closure~)
         if (not $r) {
-            fail
+            builtin:fail
         }
     } catch _ {
         printf ", %s\n" (styled 'passed' green)
         return
     }
     printf ", %s\n" (styled 'failed' red)
-    fail
+    builtin:fail
 }
 
-fn assert-bool {|assertion~ &def=$nil|
-    assert &def=$assertion~['def'] {
+fn assert {|assertion~|
+    printf 'assert: %s' $assertion~['def']
+    try {
         if (not ($assertion~)) {
-            fail
+            builtin:fail
         }
+    } catch e {
+        printf ", %s\n" (styled 'failed' red)
+        builtin:fail $e
     }
+    printf ", %s\n" (styled 'passed' green)
+
 }
 
-fn refute-bool {|assertion~ &def=$nil|
-    refute &def=$assertion~['def'] {
-        if (not ($assertion~)) {
-            fail
+fn refute {|assertion~|
+    printf 'refute: %s' $assertion~['def']
+    try {
+        if ($assertion~) {
+            builtin:fail
         }
+    } catch e {
+        printf ", %s\n" (styled 'failed' red)
+        builtin:fail $e
     }
+    printf ", %s\n" (styled 'passed' green)
 }

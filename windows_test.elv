@@ -7,5 +7,5 @@ if (not $platform:is-windows) {
     exit
 }
 
-test:assert { windows:reserved 'C:\NUL\dir' }
-test:refute { windows:reserved 'C:\dir\NUL' }
+test:pass { windows:reserved 'C:\NUL\dir' }
+test:fail { windows:reserved 'C:\dir\NUL' }

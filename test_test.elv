@@ -1,7 +1,9 @@
 use github.com/chlorm/elvish-stl/test
 
 
-test:assert { nop }
-test:refute { fail test }
-test:assert-bool { put $true }
-test:refute-bool { put $false }
+test:pass { nop }
+test:fail { fail test }
+test:assert { put $true }
+test:fail { test:assert { put $false } }
+test:refute { put $false }
+test:fail { test:refute { put $true } }
