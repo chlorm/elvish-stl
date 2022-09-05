@@ -13,11 +13,11 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/list
-use github.com/chlorm/elvish-stl/path
-use github.com/chlorm/elvish-stl/platform
-use github.com/chlorm/elvish-stl/str
-use github.com/chlorm/elvish-stl/utils
+use ./list
+use ./path
+use ./platform
+use ./str
+use ./utils
 
 
 var DELIMITER = ':'

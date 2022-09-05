@@ -1,5 +1,5 @@
-use github.com/chlorm/elvish-stl/env
-use github.com/chlorm/elvish-stl/test
+use ./env
+use ./test
 
 
 test:assert {

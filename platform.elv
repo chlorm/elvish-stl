@@ -14,8 +14,8 @@
 
 
 use platform
-use github.com/chlorm/elvish-stl/exec
-use github.com/chlorm/elvish-stl/str
+use ./exec
+use ./str
 
 
 var arch = $platform:arch

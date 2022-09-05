@@ -1,4 +1,4 @@
-use github.com/chlorm/elvish-stl/test
+use ./test
 
 
 test:pass { nop }

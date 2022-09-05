@@ -13,8 +13,8 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/exec
-use github.com/chlorm/elvish-stl/platform
+use ./exec
+use ./platform
 
 
 fn date {|&format='%Y%m%d'|

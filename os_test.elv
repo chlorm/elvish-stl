@@ -1,6 +1,7 @@
-use github.com/chlorm/elvish-stl/os
-use github.com/chlorm/elvish-stl/platform
-use github.com/chlorm/elvish-stl/test
+use ./os
+use ./path
+use ./platform
+use ./test
 
 
 # FIXME: non-hermetic

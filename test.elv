@@ -14,8 +14,8 @@
 
 
 use builtin
-use github.com/chlorm/elvish-stl/path
-use github.com/chlorm/elvish-stl/str
+use ./path
+use ./str
 
 
 fn run {

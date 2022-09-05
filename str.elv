@@ -14,7 +14,7 @@
 
 
 use str
-use github.com/chlorm/elvish-stl/platform
+use ./platform
 
 
 var LINE-DELIMITER = "\n"

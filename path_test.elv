@@ -1,5 +1,5 @@
-use github.com/chlorm/elvish-stl/path
-use github.com/chlorm/elvish-stl/test
+use ./path
+use ./test
 
 
 # Trailing delimiter should not cause paths to differ

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/str
+use ./str
 
 
 fn open {|file|

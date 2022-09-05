@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-use github.com/chlorm/elvish-stl/map
-use github.com/chlorm/elvish-stl/re
-use github.com/chlorm/elvish-stl/str
+use ./map
+use ./re
+use ./str
 
 
 # Parses ini encoded data and returns a map.

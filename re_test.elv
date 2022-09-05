@@ -1,5 +1,5 @@
-use github.com/chlorm/elvish-stl/re
-use github.com/chlorm/elvish-stl/test
+use ./re
+use ./test
 
 
 test:assert { ==s (re:find '.*(answer).*' 'kasjdhfanswergasdfg') 'answer' }

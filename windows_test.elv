@@ -1,6 +1,6 @@
-use github.com/chlorm/elvish-stl/platform
-use github.com/chlorm/elvish-stl/test
-use github.com/chlorm/elvish-stl/windows
+use ./platform
+use ./test
+use ./windows
 
 if (not $platform:is-windows) {
     echo 'skipping' >&2
