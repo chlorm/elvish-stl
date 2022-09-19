@@ -10,3 +10,10 @@ test:assert {
     set cmd = (path:basename $cmd)
     ==s $cmd 'whoami'
 }
+test:assert {
+    set-env TEST_CMDS_VAR 'non-existant-cmd,another-non-existant-cmd'
+    var cmds = [ whoami hostname ]
+    var cmd = (utils:get-preferred-cmd TEST_CMDS_VAR $cmds)
+    set cmd = (path:basename $cmd)
+    ==s $cmd 'whoami'
+}
