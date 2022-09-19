@@ -217,7 +217,7 @@ fn is-symlink {|path| -is-type 'symbolic link' $path }
 fn is-unknown {|path| -is-type 'unknown?' $path }
 fn exists {|path|
     try {
-        var _ = (> (count (stat $path)) 0)
+        var _ = (> (count (stat $path 2>$NULL)) 0)
         put $true
     } catch _ {
         put $false
