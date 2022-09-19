@@ -16,6 +16,7 @@
 use ./list
 use ./path
 use ./platform
+use ./re
 use ./str
 use ./utils
 
@@ -24,7 +25,6 @@ var DELIMITER = ':'
 if $platform:is-windows {
     set DELIMITER = ';'
 }
-
 
 fn get {|envVar|
     try {
@@ -124,9 +124,12 @@ fn bin-path {|bin|
         fail
     }
 
-    # search-external does not escape paths
     if $platform:is-windows {
+        # search-external does not escape paths
         set path = (path:escape $path)
+        # Windows does not require file extensions for executables in the
+        # search path.
+        set path = (re:replace '\.exe$' '' $path)
     }
 
     put $path
