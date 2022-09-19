@@ -22,12 +22,13 @@ use ./str
 
 # env-var is a comma separated environment variable of preferred commands.
 # cmds is a list of fallback commands if none exist in env-var.
-fn get-preferred-cmd {|envVar cmds|
-    var orig = (to-string $cmds)
-
+fn get-preferred-cmd {|envVar fallbackCmds|
+    var cmds = $fallbackCmds
     try {
-        var cmds = [ (str:split ',' (env:get $envVar)) ]
+        set cmds = [ $@cmds (str:split ',' (env:get $envVar)) ]
     } catch _ { }
+
+    var cmdsStr = (to-string $cmds)
 
     var cmd = $nil
     for i $cmds {
@@ -42,7 +43,7 @@ fn get-preferred-cmd {|envVar cmds|
     }
 
     if (eq $cmd $nil) {
-        var err = 'No command found in '$orig', install one or set '$envVar
+        var err = 'No command found in '$cmds', install one or set '$envVar
         fail $err
     }
 
