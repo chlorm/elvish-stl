@@ -22,3 +22,5 @@ test:assert { utils:is-nil '' }
 test:assert { utils:is-nil '          ' }
 test:assert { utils:is-nil $nil }
 test:refute { utils:is-nil 'asdf' }
+
+test:pass { utils:test-writeable $pwd }
