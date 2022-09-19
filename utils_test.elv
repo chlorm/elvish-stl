@@ -17,3 +17,8 @@ test:assert {
     set cmd = (path:basename $cmd)
     ==s $cmd 'whoami'
 }
+
+test:assert { utils:is-nil '' }
+test:assert { utils:is-nil '          ' }
+test:assert { utils:is-nil $nil }
+test:refute { utils:is-nil 'asdf' }
