@@ -16,7 +16,6 @@
 use ./env
 use ./os
 use ./path
-use ./re
 use ./str
 
 
@@ -55,7 +54,8 @@ fn is-nil {|val|
         put $true
         return
     }
-    re:is-empty $val
+
+    str:is-empty $val
 }
 
 fn test-writeable {|dir|
