@@ -51,15 +51,20 @@ fn split {|splitOnString string|
     str:split $splitOnString $string
 }
 
-fn to-lines {|fileStr &line-delimiter=$nil|
+fn to-lines {|fileString &line-delimiter=$nil|
     if (eq $line-delimiter $nil) {
         set line-delimiter = $LINE-DELIMITER
     }
 
-    for s [ (split $line-delimiter $fileStr) ] {
-        if (==s $s '') {
+    split $line-delimiter $fileString
+}
+
+fn to-nonempty-lines {|fileString &line-delimiter=$nil|
+    for s [ (to-lines &line-delimiter=$line-delimiter $fileString) ] {
+        if (is-empty $s) {
             continue
         }
+
         put $s
     }
 }
