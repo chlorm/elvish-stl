@@ -43,9 +43,6 @@ fn finds {|regex string|
     }
 }
 
-fn is-empty {|string|
-    re:match '^([\s]+)?$' $string
-}
 
 fn match {|pattern string|
     re:match $pattern $string

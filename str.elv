@@ -15,6 +15,7 @@
 
 use str
 use ./platform
+use ./re
 
 
 var LINE-DELIMITER = "\n"
@@ -24,6 +25,10 @@ if $platform:is-windows {
 
 fn has {|searchIn searchFor|
     str:contains $searchIn $searchFor
+}
+
+fn is-empty {|string|
+    re:has '^([\s]+)?$' $string
 }
 
 fn has-prefix {|string prefix|
