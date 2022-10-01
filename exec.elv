@@ -44,11 +44,14 @@ fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
         # TODO: log output, allows using verboase output of commands
         file:close $stdout[r]
     } catch exception {
-        file:close $stdout[w]
+        try { file:close $stdout[w] } catch _ { }
         file:close $stdout[r]
-        file:close $stderr[w]
-        var error = (io:open $stderr)
-        file:close $stderr[r]
+        try { file:close $stderr[w] } catch _ { }
+        var error = ''
+        try {
+            set error = (io:open $stderr)
+            file:close $stderr[r]
+        } catch _ { }
         var errorMessage = (to-string $exception['reason'])"\n\n"$error
         fail $errorMessage
     }
@@ -78,9 +81,12 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
         }
         file:close $stdout[r]
     } catch exception {
-        file:close $stdout[w]
-        var error = (io:open $stdout)
-        file:close $stdout[r]
+        try { file:close $stdout[w] } catch _ { }
+        var error = ''
+        try {
+            set error = (io:open $stdout)
+            file:close $stdout[r]
+        } catch _ { }
         var errorMessage = (to-string $exception['reason'])"\n\n"$error
         fail $errorMessage
     }
