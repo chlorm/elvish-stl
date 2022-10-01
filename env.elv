@@ -64,14 +64,6 @@ fn unset {|envVar|
     unset-env $envVar
 }
 
-fn -delimiter-valid {|delimiter|
-    if (==s $delimiter '') {
-        fail 'Cannot delimit path by empty string'
-    } elif (eq $delimiter $nil) {
-        fail 'Cannot delimit path by $nil'
-    }
-}
-
 fn has-elem {|envVar elem &delimiter=':'|
     var envVarVal = (get-value-or-nil $envVar)
     if (eq $envVarVal $nil) {
@@ -79,7 +71,11 @@ fn has-elem {|envVar elem &delimiter=':'|
         return
     }
 
-    -delimiter-valid $delimiter
+    if (utils:is-nil $delimiter) {
+        put $false
+        return
+    }
+
     list:has [ (str:split $delimiter $envVarVal) ] $elem
 }
 
