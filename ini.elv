@@ -46,16 +46,21 @@ fn unmarshal {|fileStr &line-delimiter=$nil|
 }
 
 # Returns ini encoding of a map.
-fn marshal {|map &line-delimiter=$nil|
+fn marshal {|map &line-delimiter=$nil &pad-equals=$false|
     if (eq $line-delimiter $nil) {
         set line-delimiter = $str:LINE-DELIMITER
+    }
+
+    var equals = "="
+    if $pad-equals {
+        set equals = " = "
     }
 
     var o = ""
     for section [ (map:keys $map) ] {
         set o = $o"["$section"]"$line-delimiter
         for key [ (map:keys $map[$section]) ] {
-            set o = $o$key"="$map[$section][$key]$line-delimiter
+            set o = $o$key$equals$map[$section][$key]$line-delimiter
         }
         set o = $o$line-delimiter
     }
