@@ -19,7 +19,3 @@ use ./str
 fn open {|file|
     slurp < $file
 }
-
-fn cat {|file &line-delimiter=$str:LINE-DELIMITER|
-    str:split $line-delimiter (open $file)
-}
