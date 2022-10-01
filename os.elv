@@ -66,27 +66,27 @@ fn link {|sourcePath targetPath|
     exec:cmd 'ln' '-v' $sourcePath $targetPath
 }
 
-fn makedir {|dirPath|
+fn makedir {|directoryPath|
     if $platform:is-windows {
-        windows:reserved $dirPath
+        windows:reserved $directoryPath
         # FIXME: fail if parent doesn't exist, New-Item always creates parents.
         exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dirPath))
+            '-Path' (path:escape-input (path:absolute $directoryPath))
         return
     }
 
-    exec:cmd 'mkdir' '-v' $dirPath
+    exec:cmd 'mkdir' '-v' $directoryPath
 }
 
-fn makedirs {|dirPath|
+fn makedirs {|directoryPath|
     if $platform:is-windows {
-        windows:reserved $dirPath
+        windows:reserved $directoryPath
         exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $dirPath))
+            '-Path' (path:escape-input (path:absolute $directoryPath))
         return
     }
 
-    exec:cmd 'mkdir' '-pv' $dirPath
+    exec:cmd 'mkdir' '-pv' $directoryPath
 }
 
 fn move {|sourcePath targetPath|
@@ -121,14 +121,14 @@ fn remove {|filePath|
     exec:cmd 'rm' '-fv' $filePath
 }
 
-fn removedirs {|dirPath|
+fn removedirs {|directoryPath|
     if $platform:is-windows {
         exec:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
-            '-LiteralPath' (path:escape (path:absolute $dirPath))
+            '-LiteralPath' (path:escape (path:absolute $directoryPath))
         return
     }
 
-    exec:cmd 'rm' '-frv' $dirPath
+    exec:cmd 'rm' '-frv' $directoryPath
 }
 
 # FIXME: implement icacl/fsutil windows port, only permission should differ.
@@ -264,7 +264,7 @@ fn unlink {|linkPath|
 
 fn user {
     if $platform:is-windows {
-        env:get UserName
+        env:get 'UserName'
         return
     }
 

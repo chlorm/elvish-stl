@@ -78,7 +78,6 @@ fn assert {|assertion~|
         builtin:fail $e
     }
     printf ", %s\n" (styled 'passed' green)
-
 }
 
 fn refute {|assertion~|

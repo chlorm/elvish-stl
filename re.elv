@@ -17,13 +17,13 @@ use re
 
 
 # Returns the match string from an re:find object
-fn -find-obj {|obj|
-    put $obj['groups'][1..][0]['text']
+fn -find-obj {|reFindObject|
+    put $reFindObject['groups'][1..][0]['text']
 }
 
-fn -find-objs {|obj|
+fn -find-objs {|reFindObject|
     var l = [ ]
-    for i $obj['groups'][1..] {
+    for i $reFindObject['groups'][1..] {
         set l = [ $@l $i['text'] ]
     }
     put $l
@@ -48,6 +48,6 @@ fn match {|pattern string|
     re:match $pattern $string
 }
 
-fn replace {|pattern replacePatternWith string|
-    re:replace $pattern $replacePatternWith $string
+fn replace {|regex substituteString string|
+    re:replace $regex $substituteString $string
 }

@@ -39,16 +39,16 @@ fn has-suffix {|string suffix|
     str:has-suffix $string $suffix
 }
 
-fn join {|joinWithStr listOfStrs|
-    str:join $joinWithStr $listOfStrs
+fn join {|delimitByString listOfStrings|
+    str:join $delimitByString $listOfStrings
 }
 
-fn replace {|strToMatch strToSub string|
-    str:replace $strToMatch $strToSub $string
+fn replace {|stringToMatch stringToSubstitute string|
+    str:replace $stringToMatch $stringToSubstitute $string
 }
 
-fn split {|splitOnStr str|
-    str:split $splitOnStr $str
+fn split {|splitOnString string|
+    str:split $splitOnString $string
 }
 
 fn to-lines {|fileStr &line-delimiter=$nil|

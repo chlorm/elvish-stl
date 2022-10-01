@@ -3,7 +3,7 @@ use ./test
 use ./windows
 
 if (not $platform:is-windows) {
-    echo 'skipping' >&2
+    echo 'skipping: windows_test.elv' >&2
     exit
 }
 

@@ -149,14 +149,14 @@ fn is-hidden {|path_|
     put $hidden
 }
 
-fn join {|@objects|
-    clean (str:join $DELIMITER $objects)
+fn join {|@pathObjects|
+    clean (str:join $DELIMITER $pathObjects)
 }
 
 # Converts an absolute path in a relative path.
-fn relative-to {|absPath relativeToAbsPath|
-    var p1 = $absPath
-    var p2 = $relativeToAbsPath
+fn relative-to {|absolutePath relativeToAbsolutePath|
+    var p1 = $absolutePath
+    var p2 = $relativeToAbsolutePath
     var p1Final = $nil
     var p2Iter = (num 1)
     # Recurse up p1 until p2 has-prefix p1
@@ -175,14 +175,14 @@ fn relative-to {|absPath relativeToAbsPath|
         set p2 = (dirname $p2)
         set p2Iter = (+ $p2Iter (num 1))
     }
-    # Prepend ../'s of the numer of iters
+    # Prepend ../'s of the number of iters
     var prepend = [ ]
     if (> $p2Iter 1) {
         for i [ (range 1 $p2Iter) ] {
             set prepend = [ $@prepend '..' ]
         }
     }
-    join $@prepend (str:replace $p1Final$DELIMITER '' $absPath)
+    join $@prepend (str:replace $p1Final$DELIMITER '' $absolutePath)
 }
 
 fn unescape {|path_|
@@ -197,43 +197,42 @@ fn unescape-unixlike {|path_|
     escape &invert=$true &unix=$true $path_
 }
 
-fn -scandir-glob {|dirPath &type='regular'|
+fn -scandir-glob {|directoryPath &type='regular'|
     # Extra trailing `/`, multiple `/` cause the remove root regex to fail.
-    set dirPath = (re:replace '[\/]+$' '/' $dirPath)
+    set directoryPath = (re:replace '[\/]+$' '/' $directoryPath)
 
-    put $dirPath*[nomatch-ok][match-hidden][type:$type] | peach {|i|
+    put $directoryPath*[nomatch-ok][match-hidden][type:$type] | peach {|i|
         # Remove root path
-        set i = (re:replace '^'$dirPath '' $i)
+        set i = (re:replace '^'$directoryPath '' $i)
         # Convert path to native delimiters
         set i = (clean $i)
         put $i
     }
 }
 
-fn scandir {|dirPath|
+fn scandir {|directoryPath|
     # Elvish only supports globbing unix-like delimited paths.
-    set dirPath = (dos2unix $dirPath)
+    set directoryPath = (dos2unix $directoryPath)
 
-    # Append path delimiter to prevent globbing partial directory names.
-    set dirPath = $dirPath'/'
+    set directoryPath = $directoryPath'/'
 
     var files = [ ]
     var dirs = [ ]
     run-parallel {
-        set files = [ (-scandir-glob $dirPath) ]
+        set files = [ (-scandir-glob $directoryPath) ]
     } {
-        set dirs = [ (-scandir-glob &type='dir' $dirPath) ]
+        set dirs = [ (-scandir-glob &type='dir' $directoryPath) ]
     }
 
     put [
-        &root=(clean $dirPath)
+        &root=(clean $directoryPath)
         &dirs=$dirs
         &files=$files
     ]
 }
 
-fn walk {|dirPath|
-    var o = (scandir $dirPath)
+fn walk {|directoryPath|
+    var o = (scandir $directoryPath)
     put $o
 
     for d $o['dirs'] {
