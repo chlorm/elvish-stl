@@ -11,11 +11,11 @@ test:assert {
 
 test:assert {
     ==s ^
-        (path:relative-to $E:HOME/.config/elvish $E:HOME/.local) ^
+        (path:relative-to $E:HOME'/.config/elvish' $E:HOME'/.local') ^
         '../.config/elvish'
 }
 test:assert {
     ==s ^
-        (path:relative-to $E:HOME/.local $E:HOME/.config/elvish) ^
+        (path:relative-to $E:HOME'/.local' $E:HOME'/.config/elvish') ^
         '../../.local'
 }

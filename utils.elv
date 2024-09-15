@@ -20,7 +20,7 @@ use ./str
 
 
 # env-var is a comma separated environment variable of preferred commands.
-# cmds is a list of fallback commands if none exist in env-var.
+# fallbackCmds is a list of fallback commands if none exist in env-var.
 fn get-preferred-cmd {|envVar fallbackCmds|
     var cmds = $fallbackCmds
     try {

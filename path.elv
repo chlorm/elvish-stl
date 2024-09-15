@@ -56,14 +56,12 @@ fn escape {|path_ &unix=$false &input=$false &invert=$false|
     }
 
     if (and $platform:is-windows (not $unix)) {  # DOS
-        # WARNING: Improperly escaped strings fail powershell functions
-        #          silently for an unknown reason.
-        # FIXME: this is missing characters that need to be escaped.
+        # WARNING: Improperly escaped strings can silently fail powershell functions
         var specialChars = [
             '['
             ']'
         ]
-        var single = [
+        var singleEscape = [
             '`'  # Must come first
             ''''
             ' '  # Space
@@ -77,26 +75,26 @@ fn escape {|path_ &unix=$false &input=$false &invert=$false|
             ';'
             '$'
         ]
-        var unicodeQuoteFinalPunctuationChars = [ (re:find '\p{Pf}' $path_) ]
-        for i $unicodeQuoteFinalPunctuationChars {
-            if (not (list:has $single $i)) {
-                set single = [ $@single $i ]
+        var unicodeChars = [ (re:find '([^\x00-\x7F])' $path_) ]
+        for i $unicodeChars {
+            if (not (list:has $singleEscape $i)) {
+                set singleEscape = [ $@singleEscape $i ]
             }
         }
-        var double = [ ]
+        var doubleEscape = [ ]
         if $input {
             # Special characters have to be double escaped when passed as input.
-            set double = $specialChars
+            set doubleEscape = $specialChars
         } else {
-            set single = [
-                $@single
+            set singleEscape = [
+                $@singleEscape
                 $@specialChars
             ]
         }
-        for i $double {
+        for i $doubleEscape {
             set path_ = (str:replace (-order $i '``'$i) $path_)
         }
-        for i $single {
+        for i $singleEscape {
             set path_ = (str:replace (-order $i '`'$i) $path_)
         }
         put $path_
@@ -153,7 +151,7 @@ fn join {|@pathObjects|
     clean (str:join $DELIMITER $pathObjects)
 }
 
-# Converts an absolute path in a relative path.
+# Converts an absolute path into a relative path.
 fn relative-to {|absolutePath relativeToAbsolutePath|
     var p1 = $absolutePath
     var p2 = $relativeToAbsolutePath
