@@ -19,3 +19,9 @@ test:assert {
         (path:relative-to $E:HOME'/.local' $E:HOME'/.config/elvish') ^
         '../../.local'
 }
+
+test:assert {
+    var path_ = "File with \u0085 a next line control char.mp4"
+    var escaped = (path:escape-input $path_)
+    ==s $escaped "File` with` `\u0085` a` next` line` control` char.mp4"
+}
