@@ -18,7 +18,9 @@ test:assert { os:exists 'os.elv' }
 test:refute { os:exists 'not-existant-file' }
 
 # FIXME: non-hermetic
-test:assert { os:is-symlink '/bin' }
+if (not $platform:is-windows) {
+    test:assert { os:is-symlink '/bin' }
+}
 
 if $platform:is-windows {
     test:fail { os:touch 'NUL' }
