@@ -19,12 +19,10 @@ use ./platform
 use ./re
 use ./str
 use ./utils
+use path path_
 
 
-var DELIMITER = ':'
-if $platform:is-windows {
-    set DELIMITER = ';'
-}
+var DELIMITER = $path_:list-separator
 
 fn get {|envVar|
     try {

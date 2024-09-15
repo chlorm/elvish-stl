@@ -20,16 +20,13 @@ use ./path
 use ./platform
 use ./str
 use ./windows
+use os os_
 
 
-var NULL = '/dev/null'
-if $platform:is-windows {
-    set NULL = 'NUL'
-}
+var NULL = $os_:dev-null
 
-# FIXME: windows port
 fn chmod {|perm target|
-    exec:cmd 'chmod' '-v' $perm $target
+    os_:chmod "0o"$perm $target
 }
 
 # FIXME: windows port
@@ -198,7 +195,7 @@ fn statfs {|path|
 fn -is-type {|type path|
     var i = $true
     try {
-        if (!=s $type (stat $path 2>$NULL)[filetype]) {
+        if (!=s $type (os_:stat $path)[type]) {
             fail
         }
     } catch _ {
@@ -207,22 +204,15 @@ fn -is-type {|type path|
     put $i
 }
 
-fn is-blkdev {|path| -is-type 'block device' $path }
-fn is-chardev {|path| -is-type 'character device' $path }
-fn is-dir {|path| -is-type 'directory' $path }
-fn is-file {|path| -is-type 'regular file' $path }
-fn is-pipe {|path| -is-type 'FIFO/pipe' $path }
+fn is-blkdev {|path| -is-type 'device' $path }
+fn is-chardev {|path| -is-type 'chardevice' $path }
+fn is-dir {|path| os_:is-dir $path }
+fn is-file {|path| os_:is-regular $path }
+fn is-pipe {|path| -is-type 'named-pipe' $path }
 fn is-socket {|path| -is-type 'socket' $path }
-fn is-symlink {|path| -is-type 'symbolic link' $path }
-fn is-unknown {|path| -is-type 'unknown?' $path }
-fn exists {|path|
-    try {
-        var _ = (> (count (stat $path 2>$NULL)) 0)
-        put $true
-    } catch _ {
-        put $false
-    }
-}
+fn is-symlink {|path| -is-type 'symlink' $path }
+fn is-unknown {|path| -is-type 'irregular' $path }
+fn exists {|path| os_:exists $path }
 
 # NOTE: Symlinks require admin permissions on Windows.
 fn symlink {|sourcePath targetPath|
