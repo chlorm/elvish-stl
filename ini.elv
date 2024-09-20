@@ -24,15 +24,16 @@ fn unmarshal {|fileStr &line-delimiter=$nil|
         set line-delimiter = $str:LINE-DELIMITER
     }
 
-    var sectionNameRegex = "(\\[.*\\])"$line-delimiter
-    var sectionKvsRegex = "((?:[a-zA-Z0-9.=-]+"$line-delimiter")+)"
+    var printable = '\p{L}\p{M}\p{N}\p{P}\p{S}\p{Z}'
+    var sectionNameRegex = '\[(['$printable']+)\]'$line-delimiter
+    var sectionKvsRegex = '?((?:['$printable']+'$line-delimiter')+)'
     var sections = [(
         re:finds $sectionNameRegex$sectionKvsRegex $fileStr
     )]
 
     var o = [&]
     for section $sections {
-        var sectionName = (re:find '\[(.*)\]' $section[0])
+        var sectionName = $section[0]
         set o[$sectionName] = [&]
         for kv [ (str:split $line-delimiter $section[1]) ] {
             if (==s $kv '') {
