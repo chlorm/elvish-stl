@@ -14,8 +14,8 @@
 
 
 use str
-use ./platform
-use ./re
+use platform
+use re
 
 
 var LINE-DELIMITER = "\n"
@@ -28,7 +28,7 @@ fn has {|searchIn searchFor|
 }
 
 fn is-empty {|string|
-    re:has '^([\s]+)?$' $string
+    re:match '^([\s]+)?$' $string
 }
 
 fn has-prefix {|string prefix|
