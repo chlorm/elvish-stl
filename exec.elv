@@ -52,7 +52,9 @@ fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
             set error = (io:open $stderr)
             file:close $stderr[r]
         } catch _ { }
-        var errorMessage = (to-string $exception['reason'])"\n\n"$error
+        var c = $cmd" "(str:join ' ' $args)
+        var e = (to-string $exception['reason'])
+        var errorMessage = "\n"$c"\n\n"$e"\n\n"$error
         fail $errorMessage
     }
 }
@@ -87,7 +89,9 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
             set error = (io:open $stdout)
             file:close $stdout[r]
         } catch _ { }
-        var errorMessage = (to-string $exception['reason'])"\n\n"$error
+        var c = $cmd" "(str:join ' ' $args)
+        var e = (to-string $exception['reason'])
+        var errorMessage = "\n"$c"\n\n"$e"\n\n"$error
         fail $errorMessage
     }
 }
