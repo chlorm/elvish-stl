@@ -147,9 +147,7 @@ fn is-hidden {|path_|
     put $hidden
 }
 
-fn join {|@pathObjects|
-    clean (str:join $DELIMITER $pathObjects)
-}
+fn join {|@pathObjects| path:join $@pathObjects }
 
 # Converts an absolute path into a relative path.
 fn relative-to {|absolutePath relativeToAbsolutePath|

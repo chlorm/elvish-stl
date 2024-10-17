@@ -64,26 +64,11 @@ fn link {|sourcePath targetPath|
 }
 
 fn makedir {|directoryPath|
-    if $platform:is-windows {
-        windows:reserved $directoryPath
-        # FIXME: fail if parent doesn't exist, New-Item always creates parents.
-        exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $directoryPath))
-        return
-    }
-
-    exec:cmd 'mkdir' '-v' $directoryPath
+    os_:mkdir $directoryPath
 }
 
 fn makedirs {|directoryPath|
-    if $platform:is-windows {
-        windows:reserved $directoryPath
-        exec:ps 'New-Item' '-ItemType' 'directory' ^
-            '-Path' (path:escape-input (path:absolute $directoryPath))
-        return
-    }
-
-    exec:cmd 'mkdir' '-pv' $directoryPath
+    os_:mkdir-all $directoryPath
 }
 
 fn move {|sourcePath targetPath|
@@ -109,23 +94,11 @@ fn readlink {|path|
 }
 
 fn remove {|filePath|
-    if $platform:is-windows {
-        exec:ps 'Remove-Item' '-Force' '-Confirm:$False' ^
-            '-LiteralPath' (path:escape (path:absolute $filePath))
-        return
-    }
-
-    exec:cmd 'rm' '-fv' $filePath
+    os_:remove $filePath
 }
 
 fn removedirs {|directoryPath|
-    if $platform:is-windows {
-        exec:ps 'Remove-Item' '-Recurse' '-Force' '-Confirm:$False' ^
-            '-LiteralPath' (path:escape (path:absolute $directoryPath))
-        return
-    }
-
-    exec:cmd 'rm' '-frv' $directoryPath
+    os_:remove-all $directoryPath
 }
 
 # FIXME: implement icacl/fsutil windows port, only permission should differ.
@@ -216,15 +189,7 @@ fn exists {|path| os_:exists $path }
 
 # NOTE: Symlinks require admin permissions on Windows.
 fn symlink {|sourcePath targetPath|
-    if $platform:is-windows {
-        windows:reserved $targetPath
-        exec:ps 'New-Item' '-ItemType' 'SymbolicLink' ^
-            '-Value' (path:escape-input (path:absolute $sourcePath)) ^
-            '-Path' (path:escape (path:absolute $targetPath))
-        return
-    }
-
-    exec:cmd 'ln' '-sv' $sourcePath $targetPath
+    os_:symlink $sourcePath $targetPath
 }
 
 fn touch {|filePath|
