@@ -100,12 +100,12 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
 fn ps {|@psCode &cmd='powershell'|
     cmd-stdouterr $cmd ^
         '-NonInteractive' ^
-        '-Command' '$ErrorActionPreference = "Stop"; '$@psCode
+        '-Command' $@psCode
 }
 
 # Captures and returns powershell errors and output.
 fn ps-out {|@psCode &cmd='powershell'|
     cmd-stdouterr &output=$true $cmd ^
         '-NonInteractive' ^
-        '-Command' '$ErrorActionPreference = "Stop"; '$@psCode
+        '-Command' $@psCode
 }
