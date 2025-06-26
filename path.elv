@@ -199,7 +199,7 @@ fn -scandir-glob {|directoryPath &type='regular'|
 
     put $directoryPath*[nomatch-ok][match-hidden][type:$type] | peach {|i|
         # Remove root path
-        set i = (re:replace '^'$directoryPath '' $i)
+        set i = (re:replace '^'(re:quote $directoryPath) '' $i)
         # Convert path to native delimiters
         set i = (clean $i)
         put $i
