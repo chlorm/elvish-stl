@@ -48,6 +48,10 @@ fn match {|pattern string|
     re:match $pattern $string
 }
 
+fn quote {|string|
+    re:quote $string
+}
+
 fn replace {|regex substituteString string|
     re:replace $regex $substituteString $string
 }
