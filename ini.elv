@@ -36,7 +36,7 @@ fn unmarshal {|fileStr &line-delimiter=$nil|
         var sectionName = $section[0]
         set o[$sectionName] = [&]
         for kv [ (str:split $line-delimiter $section[1]) ] {
-            if (==s $kv '') {
+            if (or (==s $kv '') (re:match '^([\s]+|)#' $kv)) {
                 continue
             }
             set kv = [ (str:split '=' $kv) ]
