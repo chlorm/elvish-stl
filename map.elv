@@ -16,6 +16,16 @@
 use builtin
 
 
+fn get-key {|map value|
+    for i [ (builtin:keys $map) ] {
+        if (==s $map[$i] $value) {
+            put $i
+            return
+        }
+    }
+    fail 'Value not found'
+}
+
 fn has-key {|map key|
     builtin:has-key $map $key
 }
