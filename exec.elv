@@ -60,8 +60,8 @@ fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
 }
 
 # Captures and returns command errors and output.
-fn cmd-out {|cmd @args|
-    cmd &output=$true $cmd $@args
+fn cmd-out {|cmd @args &line-delimiter=$nil|
+    cmd &output=$true &line-delimiter=$line-delimiter $cmd $@args
 }
 
 # Commands that return errors on stdout.
@@ -97,15 +97,15 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
 }
 
 # Captures and returns powershell errors while suppressing output on success.
-fn ps {|@psCode &cmd='powershell'|
-    cmd-stdouterr $cmd ^
+fn ps {|@psCode &cmd='powershell' &line-delimiter=$nil|
+    cmd-stdouterr &line-delimiter=$line-delimiter $cmd ^
         '-NonInteractive' ^
         '-Command' $@psCode
 }
 
 # Captures and returns powershell errors and output.
-fn ps-out {|@psCode &cmd='powershell'|
-    cmd-stdouterr &output=$true $cmd ^
+fn ps-out {|@psCode &cmd='powershell' &line-delimiter=$nil|
+    cmd-stdouterr &output=$true &line-delimiter=$line-delimiter $cmd ^
         '-NonInteractive' ^
         '-Command' $@psCode
 }
