@@ -178,6 +178,9 @@ fn relative-to {|absolutePath relativeToAbsolutePath|
             set prepend = [ $@prepend '..' ]
         }
     }
+    if (and (!=s $p1Final '') (not (str:has $absolutePath $p1Final$DELIMITER))) {
+        fail 'Mixed path separators'
+    }
     join $@prepend (str:replace $p1Final$DELIMITER '' $absolutePath)
 }
 
