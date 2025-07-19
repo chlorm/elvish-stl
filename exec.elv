@@ -36,7 +36,7 @@ fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
         file:close $stdout[w]
         file:close $stderr[r]
         if $output {
-            var f = (io:open $stdout)
+            var f = (io:read $stdout)
             # Remove trailing newlines
             var s = (re:replace $line-delimiter"$" '' $f)
             str:split $line-delimiter $s
@@ -49,7 +49,7 @@ fn cmd {|cmd @args &output=$false &line-delimiter=$nil|
         try { file:close $stderr[w] } catch _ { }
         var error = ''
         try {
-            set error = (io:open $stderr)
+            set error = (io:read $stderr)
             file:close $stderr[r]
         } catch _ { }
         var c = $cmd" "(str:join ' ' $args)
@@ -76,7 +76,7 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
         $c $@args >$stdout
         file:close $stdout[w]
         if $output {
-            var f = (io:open $stdout)
+            var f = (io:read $stdout)
             # Remove trailing newlines
             var s = (re:replace $line-delimiter"$" '' $f)
             str:split $line-delimiter $s
@@ -86,7 +86,7 @@ fn cmd-stdouterr {|cmd @args &output=$false &line-delimiter=$nil|
         try { file:close $stdout[w] } catch _ { }
         var error = ''
         try {
-            set error = (io:open $stdout)
+            set error = (io:read $stdout)
             file:close $stdout[r]
         } catch _ { }
         var c = $cmd" "(str:join ' ' $args)

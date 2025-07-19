@@ -13,9 +13,8 @@
 # limitations under the License.
 
 
-use ./str
 
 
-fn open {|file|
+fn read {|file|
     slurp < $file
 }
